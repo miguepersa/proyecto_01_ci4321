@@ -84,6 +84,37 @@ GLuint turretIndices[] =
 	0, 3, 7, 0, 7, 4
 };
 
+Vertex projectileVertices[] =
+{
+	// Coordenadas             // Colores               // Normales             // Coordenadas de textura
+	// Cara inferior
+	Vertex{glm::vec3(-0.1f, -0.1f, -0.1f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(0.1f, -0.1f, -0.1f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(1.0f, 0.0f)},
+	Vertex{glm::vec3(0.1f, -0.1f,  0.1f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(1.0f, 1.0f)},
+	Vertex{glm::vec3(-0.1f, -0.1f,  0.1f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(0.0f, 1.0f)},
+	// Cara superior
+	Vertex{glm::vec3(-0.1f,  0.1f, -0.1f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(0.1f,  0.1f, -0.1f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f, 0.0f), glm::vec2(1.0f, 0.0f)},
+	Vertex{glm::vec3(0.1f,  0.1f,  0.1f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f, 0.0f), glm::vec2(1.0f, 1.0f)},
+	Vertex{glm::vec3(-0.1f,  0.1f,  0.1f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f, 0.0f), glm::vec2(0.0f, 1.0f)},
+};
+
+GLuint projectileIndices[] =
+{
+	// Cara inferior
+	0, 1, 2, 0, 2, 3,
+	// Cara superior
+	4, 5, 6, 4, 6, 7,
+	// Cara frontal
+	3, 2, 6, 3, 6, 7,
+	// Cara posterior
+	0, 1, 5, 0, 5, 4,
+	// Cara derecha
+	1, 2, 6, 1, 6, 5,
+	// Cara izquierda
+	0, 3, 7, 0, 7, 4
+};
+
 // tank vertex
 //Vertex tankVertices[] =
 //{

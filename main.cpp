@@ -1,5 +1,6 @@
 #include "Object.h"
 #include "Vertices.h"
+#include "Projectile.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -84,6 +85,20 @@ int main() {
 
 	// Posición inicial de la torreta (encima del tanque)
 	turretObject.mesh.Position = tankObject.mesh.Position + glm::vec3(0.0f, 1.5f, 0.0f);
+
+	Texture projectileTextures[]
+	{
+		Texture("textures/projectile.jpg", "diffuse", 0)
+	};
+
+	std::vector<Vertex> projectileVerts(projectileVertices, projectileVertices + sizeof(projectileVertices) / sizeof(Vertex));
+	std::vector<GLuint> projectileInd(projectileIndices, projectileIndices + sizeof(projectileIndices) / sizeof(GLuint));
+	std::vector<Texture> projectileTex(projectileTextures, projectileTextures + sizeof(projectileTextures) / sizeof(Texture));
+
+	Mesh projectileMesh(projectileVerts, projectileInd, projectileTex);
+
+	// Vector para almacenar proyectiles activos
+	std::vector<Projectile> activeProjectiles;
 
 	// Light Shader
 	Shader lightShader("shaders/light.vert", "shaders/light.frag");
@@ -236,10 +251,66 @@ int main() {
 		camera.followObject(tankObject.mesh.Position, tankObject.mesh.Orientation);
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
+		static bool canShoot = true; // Variable para evitar disparos continuos
+
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+		{
+
+			if (canShoot)
+			{
+				// **Código del Paso 5**
+
+				// Desplazamiento desde la posición de la torreta hasta la punta del cañón
+				glm::vec3 barrelOffset = glm::vec3(0.0f, 0.0f, 0.5f); // Ajusta según la longitud del cañón
+
+				// Rotar el desplazamiento según la rotación de la torreta
+				glm::mat4 turretRotationMatrix = glm::rotate(glm::mat4(1.0f), turretObject.mesh.rotateAngles, glm::vec3(0.0f, 1.0f, 0.0f));
+				glm::vec3 rotatedBarrelOffset = glm::vec3(turretRotationMatrix * glm::vec4(barrelOffset, 1.0f));
+
+				// Posición inicial del proyectil
+				glm::vec3 projectileStartPos = turretObject.mesh.Position + rotatedBarrelOffset;
+
+				// Dirección del proyectil
+				glm::vec3 projectileDirection = glm::vec3(sin(turretObject.mesh.rotateAngles), 0.0f, cos(turretObject.mesh.rotateAngles));
+
+				// Crear un nuevo proyectil
+				Projectile newProjectile(projectileMesh, projectileStartPos, projectileDirection, 20.0f);
+
+				// Agregar el proyectil al vector de proyectiles activos
+				activeProjectiles.push_back(newProjectile);
+
+				canShoot = false; // Evitar disparos continuos
+			}
+		}
+		else
+		{
+			canShoot = true;
+		}
+
+		for (size_t i = 0; i < activeProjectiles.size();)
+		{
+			activeProjectiles[i].Update(deltaTime);
+
+			if (!activeProjectiles[i].IsAlive())
+			{
+				// Eliminar el proyectil si ha expirado su tiempo de vida
+				activeProjectiles.erase(activeProjectiles.begin() + i);
+			}
+			else
+			{
+				++i;
+			}
+		}
+
 		floor.Draw(shaderProgram, camera);
 		light.Draw(lightShader, camera);
 		tankObject.mesh.Draw(tankShader, camera);
 		turretObject.mesh.Draw(tankShader, camera);
+		for (Projectile& proj : activeProjectiles)
+		{
+			proj.Draw(tankShader, camera);
+		}
+
 
 		glDepthFunc(GL_LEQUAL);
 		
