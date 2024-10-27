@@ -1,6 +1,6 @@
 #include "VertexBuffer.h"
 
-VertexBuffer::VertexBuffer(GLfloat* vertices, GLsizeiptr size) {
+VertexBuffer::VertexBuffer(std::vector<Vertex>& vertices) {
 	// Generate Vertex Buffer Object with 1 object
 	glGenBuffers(1, &ID);
 
@@ -8,7 +8,7 @@ VertexBuffer::VertexBuffer(GLfloat* vertices, GLsizeiptr size) {
 	glBindBuffer(GL_ARRAY_BUFFER, ID);
 
 	// Add the data to the VBO object
-	glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 
 
 }

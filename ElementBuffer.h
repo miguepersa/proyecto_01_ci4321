@@ -2,12 +2,13 @@
 #define ELEMENT_BUFFER_H
 
 #include <glad/glad.h>
+#include <vector>
 
 class ElementBuffer {
 
 public:
 	GLuint ID;
-	ElementBuffer(GLuint* indices, GLsizeiptr size);
+	ElementBuffer(std::vector<GLuint>& indices);
 
 	void Bind();
 	void Unbind();

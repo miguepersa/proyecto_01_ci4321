@@ -1,107 +1,82 @@
-#include <iostream>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <stb/stb_image.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include "Mesh.h"
 
-#include "Shader.h"
-#include "VertexArray.h"
-#include "VertexBuffer.h"
-#include "ElementBuffer.h"
-#include "Texture.h"
-#include "Camera.h"
+const unsigned int windowWidth = 1000;
+const unsigned int windowHeight = 1000;
 
-const unsigned int windowWidth = 800;
-const unsigned int windowHeight = 800;
+float skyboxVertices[] =
+{
+	//   Coordinates
+	-1.0f, -1.0f,  1.0f,//        7--------6
+	 1.0f, -1.0f,  1.0f,//       /|       /|
+	 1.0f, -1.0f, -1.0f,//      4--------5 |
+	-1.0f, -1.0f, -1.0f,//      | |      | |
+	-1.0f,  1.0f,  1.0f,//      | 3------|-2
+	 1.0f,  1.0f,  1.0f,//      |/       |/
+	 1.0f,  1.0f, -1.0f,//      0--------1
+	-1.0f,  1.0f, -1.0f
+};
 
+unsigned int skyboxIndices[] =
+{
+	// Right
+	1, 2, 6,
+	6, 5, 1,
+	// Left
+	0, 4, 7,
+	7, 3, 0,
+	// Top
+	4, 5, 6,
+	6, 7, 4,
+	// Bottom
+	0, 3, 2,
+	2, 1, 0,
+	// Back
+	0, 1, 5,
+	5, 4, 0,
+	// Front
+	3, 7, 6,
+	6, 2, 3
+};
 
-// Vertices coordinates
-GLfloat vertices[] =
-{ //     COORDINATES     /        COLORS          /    TexCoord   /        NORMALS       //
-	-0.5f, -0.5f,  0.5f,	1.0f, 1.0f, 1.0f,		1.0f,	0.0f,		0.0f, -1.0f,  0.0f, // bottom side
-	-0.5f, -0.5f, -0.5f,	1.0f, 1.0f, 1.0f,		1.0f,	1.0f,		0.0f, -1.0f,  0.0f, // bottom side
-	 0.5f, -0.5f, -0.5f,	1.0f, 1.0f, 1.0f,		0.0f,	1.0f,		0.0f, -1.0f,  0.0f, // bottom side
-	 0.5f, -0.5f,  0.5f,	1.0f, 1.0f, 1.0f,		0.0f,	0.0f,		0.0f, -1.0f,  0.0f, // bottom side
-	
-	-0.5f, -0.5f,  0.5f,	1.0f, 1.0f, 1.0f,		0.0f,	0.0f,		0.0f,  0.0f,  1.0f, // back side
-	 0.5f,  0.5f,  0.5f,	1.0f, 1.0f, 1.0f,		1.0f,	1.0f,		0.0f,  0.0f,  1.0f,	// back side
-	-0.5f,  0.5f,  0.5f,	1.0f, 1.0f, 1.0f,		0.0f,	1.0f,		0.0f,  0.0f,  1.0f,	// back side
-	 0.5f, -0.5f,  0.5f,	1.0f, 1.0f, 1.0f,		1.0f,	0.0f,		0.0f,  0.0f,  1.0f,	// back side
-
-	 0.5f, -0.5f,  0.5f,	1.0f, 1.0f, 1.0f,		0.0f,	0.0f,		1.0f,  0.0f,  0.0f, // right side
-	 0.5f,  0.5f,  0.5f,	1.0f, 1.0f, 1.0f,		0.0f,	1.0f,		1.0f,  0.0f,  0.0f,	// right side
-	 0.5f,  0.5f, -0.5f,	1.0f, 1.0f, 1.0f,		1.0f,	1.0f,		1.0f,  0.0f,  0.0f,	// right side
-	 0.5f, -0.5f, -0.5f,	1.0f, 1.0f, 1.0f,		1.0f,	0.0f,		1.0f,  0.0f,  0.0f,	// right side
-
-	 0.5f, -0.5f, -0.5f,	1.0f, 1.0f, 1.0f,		0.0f,	0.0f,		0.0f,  0.0f, -1.0f, // front side
-	 0.5f,  0.5f, -0.5f,	1.0f, 1.0f, 1.0f,		0.0f,	1.0f,		0.0f,  0.0f, -1.0f,	// front side
-	-0.5f,  0.5f, -0.5f,	1.0f, 1.0f, 1.0f,		1.0f,	1.0f,		0.0f,  0.0f, -1.0f,	// front side
-	-0.5f, -0.5f, -0.5f,	1.0f, 1.0f, 1.0f,		1.0f,	0.0f,		0.0f,  0.0f, -1.0f,	// front side
-	 
-	-0.5f, -0.5f, -0.5f,	1.0f, 1.0f, 1.0f,		0.0f,	0.0f,	   -1.0f,  0.0f,  0.0f, // left side
-	-0.5f,  0.5f, -0.5f,	1.0f, 1.0f, 1.0f,		0.0f,	1.0f,	   -1.0f,  0.0f,  0.0f,	// left side
-	-0.5f,  0.5f,  0.5f,	1.0f, 1.0f, 1.0f,		1.0f,	1.0f,	   -1.0f,  0.0f,  0.0f,	// left side
-	-0.5f, -0.5f,  0.5f,	1.0f, 1.0f, 1.0f,		1.0f,	0.0f,	   -1.0f,  0.0f,  0.0f,	// left side
-
-	-0.5f,  0.5f,  0.5f,	1.0f, 1.0f, 1.0f,		0.0f,	0.0f,	    0.0f,  1.0f,  0.0f, // top side
-	-0.5f,  0.5f, -0.5f,	1.0f, 1.0f, 1.0f,		0.0f,	1.0f,	    0.0f,  1.0f,  0.0f,	// top side
-	 0.5f,  0.5f, -0.5f,	1.0f, 1.0f, 1.0f,		1.0f,	1.0f,	    0.0f,  1.0f,  0.0f,	// top side
-	 0.5f,  0.5f,  0.5f,	1.0f, 1.0f, 1.0f,		1.0f,	0.0f,	    0.0f,  1.0f,  0.0f,	// top side
+Vertex floorVertices[] =
+{ //               COORDINATES           /            COLORS          /           NORMALS         /       TEXTURE COORDINATES    //
+	Vertex{glm::vec3(-20.0f, 0.0f,  20.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-20.0f, 0.0f, -20.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 1.0f)},
+	Vertex{glm::vec3( 20.0f, 0.0f, -20.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
+	Vertex{glm::vec3( 20.0f, 0.0f,  20.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(1.0f, 0.0f)}
 };
 
 // Indices for vertices order
-GLuint indices[] =
+GLuint floorIndices[] =
 {
-	 0,		 1,		 2, // bottom side
-	 0,		 2,		 3, // bottom side
-
-	 4,		 5,		 6, // back side
-	 4,		 7,		 5, // back side
-
-	 8,		 9,		10, // right side
-	 8,		10,		11, // right side
-
-	12,		13,		14, // front side
-	12,		14,		15, // front side
-
-	16,		17,		18, // left side
-	16,		18,		19, // left side
-
-	20,		21,		22, // top side
-	20,		22,		23, // top side
+	0, 1, 2,
+	0, 2, 3
 };
 
-GLfloat lightVertices[] =
+Vertex lightVertices[] =
 { //     COORDINATES     //
-	-0.1f, -0.1f,  0.1f,
-	-0.1f, -0.1f, -0.1f,
-	 0.1f, -0.1f, -0.1f,
-	 0.1f, -0.1f,  0.1f,
-	-0.1f,  0.1f,  0.1f,
-	-0.1f,  0.1f, -0.1f,
-	 0.1f,  0.1f, -0.1f,
-	 0.1f,  0.1f,  0.1f
+	Vertex{glm::vec3(-0.1f, -0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f, -0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f, -0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f, -0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f,  0.1f,  0.1f)},
+	Vertex{glm::vec3(-0.1f,  0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f,  0.1f, -0.1f)},
+	Vertex{glm::vec3(0.1f,  0.1f,  0.1f)}
 };
 
 GLuint lightIndices[] =
 {
 	0, 1, 2,
 	0, 2, 3,
-
 	0, 4, 7,
 	0, 7, 3,
-
 	3, 7, 6,
 	3, 6, 2,
-
 	2, 6, 5,
 	2, 5, 1,
-
 	1, 5, 4,
 	1, 4, 0,
-
 	4, 5, 6,
 	4, 6, 7
 };
@@ -138,45 +113,29 @@ int main() {
 	// (0, 0) -> (800, 800)
 	glViewport(0, 0, windowWidth, windowHeight);
 
+	Texture floorTextures[]
+	{
+		Texture("sand-ground-textured.jpg", "diffuse", 0)
+
+	};
+
 	// Generate shader program
 	Shader shaderProgram("default.vert", "default.frag");
 
-	// Create vertex array object
-	VertexArray vertexArray;
-	vertexArray.Bind();
+	std::vector<Vertex> floorVerts(floorVertices, floorVertices + sizeof(floorVertices) / sizeof(Vertex));
+	std::vector<GLuint> floorInd(floorIndices, floorIndices + sizeof(floorIndices) / sizeof(GLuint));
+	std::vector<Texture> floorTex(floorTextures, floorTextures + sizeof(floorTextures) / sizeof(floorTextures));
 
-	// Create vertex buffer object
-	VertexBuffer vertexBuffer(vertices, sizeof(vertices));
-	ElementBuffer elementBuffer(indices, sizeof(indices));
-
-	// Link vertex buffer and array
-	vertexArray.linkAttrib(vertexBuffer, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*) 0);
-	vertexArray.linkAttrib(vertexBuffer, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-	vertexArray.linkAttrib(vertexBuffer, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	vertexArray.linkAttrib(vertexBuffer, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
-
-	// Unbind vertex array, vertex buffer and element buffer
-	vertexArray.Unbind();
-	vertexBuffer.Unbind();
-	elementBuffer.Unbind();
+	Mesh floor(floorVerts, floorInd, floorTex);
 
 	// Light Shader
 	Shader lightShader("light.vert", "light.frag");
-
-	VertexArray lightVertexArray;
-	lightVertexArray.Bind();
-
-	VertexBuffer lightVertexBuffer(lightVertices, sizeof(lightVertices));
-	ElementBuffer lightElementBuffer(lightIndices, sizeof(lightIndices));
-
-	lightVertexArray.linkAttrib(lightVertexBuffer, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
-
-	lightVertexArray.Unbind();
-	lightVertexBuffer.Unbind();
-	lightElementBuffer.Unbind();
-
+	std::vector<Vertex> lightVerts(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(Vertex));
+	std::vector<GLuint> lightInd(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(GLuint) );
+	Mesh light(lightVerts, lightInd, floorTex);
+	
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 lightPos = glm::vec3(1.0f, 1.0f, 1.0f);
+	glm::vec3 lightPos = glm::vec3(1.0f, 10.0f, 1.0f);
 	glm::mat4 lightModel = glm::mat4(1.0f);
 	lightModel = glm::translate(lightModel, lightPos);
 
@@ -193,19 +152,37 @@ int main() {
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
-	// Texture
-	Texture berkano("b2.jpg", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-	berkano.texUnit(shaderProgram, "tex0", 0);
-
 	// Deltatime = crntTime - prevTime
 
 	// Enable depth buffer
 	glEnable(GL_DEPTH_TEST);
 
-	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 0.0f, 2.0f));
+	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 0.5f, 0.0f));
+
+	double prevTime = 0.0;
+	double currentTime = 0.0;
+	double deltaTime;
+
+	unsigned int counter = 0;
+
+	glfwSwapInterval(1);
 
 	// Main loop
-	while (!glfwWindowShouldClose(window)) {
+	while (!glfwWindowShouldClose(window)) 
+	{
+
+		currentTime = glfwGetTime();
+		deltaTime = currentTime - prevTime;
+		counter++;
+		if (deltaTime >= 1.0 / 30.0)
+		{
+			std::string FPS = std::to_string((1.0 / deltaTime) * counter);
+			std::string ms = std::to_string((deltaTime / counter) * 1000);
+			std::string windowTitle = "TankWars - " + FPS + "FPS / " + ms + "ms";
+			glfwSetWindowTitle(window, windowTitle.c_str());
+			prevTime = currentTime;
+			counter = 0;
+		}
 
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 
@@ -216,25 +193,9 @@ int main() {
 		camera.Inputs(window);
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
+		floor.Draw(shaderProgram, camera);
+		light.Draw(lightShader, camera);
 		
-		// Activate shader program
-		shaderProgram.Activate();
-		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-		camera.Matrix(shaderProgram, "camMatrix");
-
-		berkano.Bind();
-
-		// Bind the vertex array to the program
-		vertexArray.Bind();
-
-		// Drawing the triangle
-		glDrawElements(GL_TRIANGLES, sizeof(lightIndices) / sizeof(int), GL_UNSIGNED_INT, 0);
-
-		lightShader.Activate();
-		camera.Matrix(lightShader, "camMatrix");
-		lightVertexArray.Bind();
-		glDrawElements(GL_TRIANGLES, sizeof(lightIndices) / sizeof(int), GL_UNSIGNED_INT, 0);
-
 		// Flip
 		glfwSwapBuffers(window);
 
@@ -243,15 +204,7 @@ int main() {
 	}
 
 	// Deleting remaining objects 
-	vertexArray.Delete();
-	vertexBuffer.Delete();
-	elementBuffer.Delete();
 	shaderProgram.Delete();
-	berkano.Delete();
-
-	lightVertexArray.Delete();
-	lightVertexBuffer.Delete();
-	lightElementBuffer.Delete();
 	lightShader.Delete();
 
 	// Window closing

@@ -16,7 +16,7 @@
     <Filter Include="Archivos de recursos\Shaders">
       <UniqueIdentifier>{3dcf32d4-7c26-47ea-8a48-0024d3db9870}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Archivos de recursos\Tetures">
+    <Filter Include="Archivos de recursos\Textures">
       <UniqueIdentifier>{ec549d57-0357-4a32-806d-e52092ae0ceb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -46,6 +46,9 @@
       <Filter>Archivos de origen</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>
@@ -82,16 +85,22 @@
     <ClInclude Include="Camera.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\b1.jpg">
-      <Filter>Archivos de recursos\Tetures</Filter>
+      <Filter>Archivos de recursos\Textures</Filter>
     </Image>
     <Image Include="b2.jpg">
-      <Filter>Archivos de recursos\Tetures</Filter>
+      <Filter>Archivos de recursos\Textures</Filter>
     </Image>
     <Image Include="..\..\..\Downloads\b2.png">
-      <Filter>Archivos de recursos\Tetures</Filter>
+      <Filter>Archivos de recursos\Textures</Filter>
+    </Image>
+    <Image Include="sand-ground-textured.jpg">
+      <Filter>Archivos de recursos\Textures</Filter>
     </Image>
   </ItemGroup>
 </Project>
