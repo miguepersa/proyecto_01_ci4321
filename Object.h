@@ -13,6 +13,8 @@ class Object {
 	public:
 		Mesh mesh;
 		glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
+		glm::vec3 Position;
+		glm::vec3 GetPosition() const { return Position; };
 		bool firstClick = true;
 		
 		float speed = 5.0f;

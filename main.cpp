@@ -105,7 +105,7 @@ int main() {
 	// Enable depth buffer
 	glEnable(GL_DEPTH_TEST);
 
-	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 1.0f, 3.0f));
+	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 3.0f, 5.0f));
 
 	double prevTime = 0.0;
 	double currentTime = 0.0;
