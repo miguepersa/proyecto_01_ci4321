@@ -1,5 +1,7 @@
 #include "Object.h"
 #include "Vertices.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 const unsigned int windowWidth = 1900;
 const unsigned int windowHeight = 1000;
@@ -213,7 +215,17 @@ int main() {
 
 		floor.Draw(shaderProgram, camera);
 		light.Draw(lightShader, camera);
-		tankObject.HandleInput(window, camera.Orientation, (float)currentTime);
+		tankObject.HandleInput(window, camera.Orientation, (float)currentTime, windowWidth, windowHeight);
+
+		// Update model matrix for tank to include rotation
+		glm::mat4 tankModel = glm::mat4(1.0f);
+		tankModel = glm::translate(tankModel, tankObject.mesh.Position);  // Position of the tank
+		tankModel = glm::rotate(tankModel, glm::radians(tankObject.tankRotationY), glm::vec3(0.0f, 1.0f, 0.0f));  // Apply Y-axis rotation
+
+		tankShader.Activate();
+		glUniformMatrix4fv(glGetUniformLocation(tankShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(tankModel));
+
+		// Draw the tank
 		tankObject.mesh.Draw(tankShader, camera);
 
 		glDepthFunc(GL_LEQUAL);

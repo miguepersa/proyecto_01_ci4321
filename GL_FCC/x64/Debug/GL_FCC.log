@@ -1,5 +1,5 @@
 ﻿  main.cpp
-C:\Users\gabri\OneDrive\Documents\USB\Sep - Dic 2024\Computacion Grafica\Proyectos VSCode\Object.h(9,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+C:\Users\gabri\OneDrive\Documents\USB\Sep - Dic 2024\Computacion Grafica\Proyectos VSCode\Object.h(10,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
   (compiling source file 'main.cpp')
   
   GL_FCC.vcxproj -> C:\Users\gabri\OneDrive\Documents\USB\Sep - Dic 2024\Computacion Grafica\Proyectos VSCode\x64\Debug\GL_FCC.exe
