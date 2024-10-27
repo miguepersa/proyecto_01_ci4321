@@ -28,7 +28,7 @@ void Camera::Matrix(Shader& shader, const char* uniform) {
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
 }
 
-void Camera::Inputs(GLFWwindow* window, float currentTime) {
+void Camera::Inputs(GLFWwindow* window, float currentTime, glm::vec3 targetPosition) {
 
 	deltaTime = currentTime - prevTime;
 	prevTime = currentTime;
@@ -92,14 +92,16 @@ void Camera::Inputs(GLFWwindow* window, float currentTime) {
 		float rotx = sensitivity * (float)(mouseY - (height / 2)) / height;
 		float roty = sensitivity * (float)(mouseX - (width / 2)) / width;
 
-		glm::vec3 newOrientation = glm::rotate(	Orientation, glm::radians(-rotx), glm::normalize(glm::cross(Orientation, Up)) );
+		// Calculate offset from target to camera position
+		glm::vec3 offset = Position - targetPosition;
 
-		if ( !( (glm::angle(newOrientation, Up) <= glm::radians(5.0f) ) or ( glm::angle(newOrientation, -Up) <= glm::radians(5.0f) ) ) ) {
+		// Rotate offset around target based on mouse movement
+		offset = glm::rotate(offset, glm::radians(-roty), Up);  // Horizontal rotation
+		offset = glm::rotate(offset, glm::radians(-rotx), glm::normalize(glm::cross(Orientation, Up)));  // Vertical rotation
 
-			Orientation = newOrientation;
-		}
-
-		Orientation = glm::rotate(Orientation, glm::radians(-roty), Up);
+		// Update camera position and orientation
+		Position = targetPosition + offset;
+		Orientation = glm::normalize(targetPosition - Position);
 
 		glfwSetCursorPos(window, (width / 2), (height / 2));
 
