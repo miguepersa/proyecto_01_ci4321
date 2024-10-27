@@ -26,24 +26,33 @@ uniform mat4 model;
 
 uniform vec3 position;
 
+uniform float rotationAngle;
+
+mat4 rotate(float angle) 
+{
+    float cosAngle = cos(angle);
+    float sinAngle = sin(angle);
+
+    // Create a 4x4 rotation matrix around the Y axis
+    return mat4(
+        cosAngle, 0.0, sinAngle, 0.0,
+        0.0,     1.0, 0.0,      0.0,
+       -sinAngle, 0.0, cosAngle, 0.0,
+        0.0,     0.0, 0.0,      1.0
+    );
+}
 
 void main()
 {
-	// calculates current position
-	currentPos = vec3(model * vec4(aPos, 1.0f)) + position;
+    currentPos = vec3((rotate(rotationAngle) * model) * vec4(aPos, 1.0f)) + position;
 
-	if (currentPos.y <= 0.0f) {
-		currentPos.y = 0.0f;
-	}
+    if (currentPos.y <= 0.0f) {
+        currentPos.y = 0.0f;
+    }
 
-	// Assigns the colors from the Vertex Data to "color"
-	color = aColor;
-	// Assigns the texture coordinates from the Vertex Data to "texCoord"
-	texCoord = aTex;
-	// Assigns the normal from the Vertex Data to "Normal"
-	Normal = aNormal;
-	
-	// Outputs the positions/coordinates of all vertices
-	gl_Position = camMatrix * vec4(currentPos, 1.0);
-
+    color = aColor;
+    texCoord = aTex;
+    Normal = aNormal;
+    
+    gl_Position = camMatrix * vec4(currentPos, 1.0);
 }

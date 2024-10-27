@@ -17,11 +17,13 @@ void Object::HandleInput(GLFWwindow* window, glm::vec3 cameraOrientation, float 
 
     // Rotate the tank with A and D keys
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-        tankRotationY += 90.0f * deltaTime;  // Rotate left
+        tankRotationY += 70.0f * deltaTime;  // Rotate left
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-        tankRotationY -= 90.0f * deltaTime;  // Rotate right
+        tankRotationY -= 70.0f * deltaTime;  // Rotate right
     }
+
+    mesh.rotateAngles = glm::radians(tankRotationY);
 
     // Calculate forward direction based on tank's rotation
     glm::vec3 forwardDir = glm::vec3(sin(glm::radians(tankRotationY)), 0.0f, cos(glm::radians(tankRotationY)));

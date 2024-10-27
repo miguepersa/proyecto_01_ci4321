@@ -1,12 +1,8 @@
-﻿  main.cpp
-<<<<<<< HEAD
-C:\Users\migue\Desktop\OpenGL\GL_FCC\Object.h(9,10): warning C4067: símbolos (token) inesperados después de la directiva del preprocesador; se esperaba una nueva línea
-  (compilando archivo de origen "main.cpp")
+﻿  Object.cpp
+C:\Users\migue\Desktop\OpenGL\GL_FCC\Object.h(10,10): warning C4067: símbolos (token) inesperados después de la directiva del preprocesador; se esperaba una nueva línea
+  (compilando archivo de origen "Object.cpp")
   
+C:\Users\migue\Desktop\OpenGL\GL_FCC\Object.cpp(11,22): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\migue\Desktop\OpenGL\GL_FCC\Object.cpp(47,28): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+C:\Users\migue\Desktop\OpenGL\GL_FCC\Object.cpp(48,28): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
   GL_FCC.vcxproj -> C:\Users\migue\Desktop\OpenGL\GL_FCC\x64\Debug\GL_FCC.exe
-=======
-C:\Users\gabri\OneDrive\Documents\USB\Sep - Dic 2024\Computacion Grafica\Proyectos VSCode\Object.h(10,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-  (compiling source file 'main.cpp')
-  
-  GL_FCC.vcxproj -> C:\Users\gabri\OneDrive\Documents\USB\Sep - Dic 2024\Computacion Grafica\Proyectos VSCode\x64\Debug\GL_FCC.exe
->>>>>>> 9038219caf5957299f23706a712770bb880fb272

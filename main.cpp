@@ -211,7 +211,7 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-		tankObject.HandleInput(window, camera.Orientation, (float)currentTime);
+		tankObject.HandleInput(window, camera.Orientation, (float)currentTime, windowWidth, windowHeight);
 		camera.Inputs(window, (float) currentTime, tankObject.mesh.Position);
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
