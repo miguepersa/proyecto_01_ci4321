@@ -75,43 +75,39 @@ void Camera::Inputs(GLFWwindow* window, float currentTime, glm::vec3 targetPosit
 	}
 
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 		if (firstClick) {
-
 			glfwSetCursorPos(window, (width / 2), (height / 2));
 			firstClick = false;
 		}
 
-
-		double mouseX;
-		double mouseY;
-
+		double mouseX, mouseY;
 		glfwGetCursorPos(window, &mouseX, &mouseY);
 
 		float rotx = sensitivity * (float)(mouseY - (height / 2)) / height;
 		float roty = sensitivity * (float)(mouseX - (width / 2)) / width;
 
-		// Calculate offset from target to camera position
-		glm::vec3 offset = Position - targetPosition;
+		// Ajusta yaw y pitch en función del movimiento del mouse
+		yaw += roty;
+		pitch -= rotx;
 
-		// Rotate offset around target based on mouse movement
-		offset = glm::rotate(offset, glm::radians(-roty), Up);  // Horizontal rotation
-		offset = glm::rotate(offset, glm::radians(-rotx), glm::normalize(glm::cross(Orientation, Up)));  // Vertical rotation
+		// Limita el pitch para evitar que la cámara se voltee
+		if (pitch > 89.0f) pitch = 89.0f;
+		if (pitch < -89.0f) pitch = -89.0f;
 
-		// Update camera position and orientation
-		Position = targetPosition + offset;
-		Orientation = glm::normalize(targetPosition - Position);
+		// Calcula la nueva orientación de la cámara
+		Orientation.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+		Orientation.y = sin(glm::radians(pitch));
+		Orientation.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+		Orientation = glm::normalize(Orientation);
 
+		// Restablece el cursor al centro de la pantalla
 		glfwSetCursorPos(window, (width / 2), (height / 2));
-
-
-	} else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
-
+	}
+	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		firstClick = true;
-
 	}
 
 }  

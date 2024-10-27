@@ -71,16 +71,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\migue\Desktop\OpenGL\GL_FCC\libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\migue\Desktop\OpenGL\GL_FCC\libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\migue\Desktop\OpenGL\GL_FCC\libraries\include;C:\Users\gabri\OneDrive\Documents\USB\Sep - Dic 2024\Computacion Grafica\Proyectos VSCode\libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\gabri\OneDrive\Documents\USB\Sep - Dic 2024\Computacion Grafica\Proyectos VSCode\libraries\lib;C:\Users\migue\Desktop\OpenGL\GL_FCC\libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>C:\Users\migue\Desktop\OpenGL\GL_FCC\libraries\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\migue\Desktop\OpenGL\GL_FCC\libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\migue\Desktop\OpenGL\GL_FCC\libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\migue\Desktop\OpenGL\GL_FCC\libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\migue\Desktop\OpenGL\GL_FCC\libraries\include;C:\Users\gabri\OneDrive\Documents\USB\Sep - Dic 2024\Computacion Grafica\Proyectos VSCode\libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\gabri\OneDrive\Documents\USB\Sep - Dic 2024\Computacion Grafica\Proyectos VSCode\libraries\lib;C:\Users\migue\Desktop\OpenGL\GL_FCC\libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\Users\migue\Desktop\OpenGL\GL_FCC\libraries\include;$(IncludePath)</IncludePath>

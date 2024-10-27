@@ -8,7 +8,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/vector_angle.hpp>
-
 #include "Shader.h"
 
 class Camera {
@@ -23,7 +22,8 @@ class Camera {
 
 		int width;
 		int height;
-
+		float yaw = -90.0f;
+		float pitch = 0.0f;
 		float speed = 5.0f;
 		float sensitivity = 100.0f;
 		float prevTime = 0.0f;
