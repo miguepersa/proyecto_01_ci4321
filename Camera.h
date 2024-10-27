@@ -24,8 +24,11 @@ class Camera {
 		int width;
 		int height;
 
-		float speed = 0.1f;
+		float speed = 5.0f;
 		float sensitivity = 100.0f;
+		float prevTime = 0.0f;
+		float deltaTime = 0.0f;
+		float realSpeed = 0.0f;
 
 		// Camera constructor to set up initial values
 		Camera(int width, int height, glm::vec3 position);
@@ -35,7 +38,7 @@ class Camera {
 		// Exports the camera matrix to a shader
 		void Matrix(Shader& shader, const char* uniform);
 		// Handles camera inputs
-		void Inputs(GLFWwindow* window);
+		void Inputs(GLFWwindow* window, float currentTime);
 };
 
 #endif

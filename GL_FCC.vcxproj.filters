@@ -53,20 +53,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="default.vert">
-      <Filter>Archivos de recursos\Shaders</Filter>
-    </None>
-    <None Include="default.frag">
-      <Filter>Archivos de recursos\Shaders</Filter>
-    </None>
-    <None Include="light.frag">
-      <Filter>Archivos de recursos\Shaders</Filter>
-    </None>
-    <None Include="light.vert">
-      <Filter>Archivos de recursos\Shaders</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Shader.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
@@ -90,17 +76,52 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\b1.jpg">
+    <Image Include="textures\skybox\back.jpg">
       <Filter>Archivos de recursos\Textures</Filter>
     </Image>
-    <Image Include="b2.jpg">
+    <Image Include="textures\skybox\bottom.jpg">
       <Filter>Archivos de recursos\Textures</Filter>
     </Image>
-    <Image Include="..\..\..\Downloads\b2.png">
+    <Image Include="textures\skybox\front.jpg">
       <Filter>Archivos de recursos\Textures</Filter>
     </Image>
-    <Image Include="sand-ground-textured.jpg">
+    <Image Include="textures\skybox\left.jpg">
       <Filter>Archivos de recursos\Textures</Filter>
     </Image>
+    <Image Include="textures\skybox\right.jpg">
+      <Filter>Archivos de recursos\Textures</Filter>
+    </Image>
+    <Image Include="textures\skybox\top.jpg">
+      <Filter>Archivos de recursos\Textures</Filter>
+    </Image>
+    <Image Include="textures\b2.jpg">
+      <Filter>Archivos de recursos\Textures</Filter>
+    </Image>
+    <Image Include="textures\sand-ground-textured.jpg">
+      <Filter>Archivos de recursos\Textures</Filter>
+    </Image>
+    <Image Include="textures\b1.jpg">
+      <Filter>Archivos de recursos\Textures</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\default.frag">
+      <Filter>Archivos de recursos\Shaders</Filter>
+    </None>
+    <None Include="shaders\default.vert">
+      <Filter>Archivos de recursos\Shaders</Filter>
+    </None>
+    <None Include="shaders\light.frag">
+      <Filter>Archivos de recursos\Shaders</Filter>
+    </None>
+    <None Include="shaders\light.vert">
+      <Filter>Archivos de recursos\Shaders</Filter>
+    </None>
+    <None Include="shaders\skybox.frag">
+      <Filter>Archivos de recursos\Shaders</Filter>
+    </None>
+    <None Include="shaders\skybox.vert">
+      <Filter>Archivos de recursos\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
