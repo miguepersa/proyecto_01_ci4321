@@ -17,6 +17,9 @@ public:
 	// Store VAO in public so it can be used in the Draw function
 	VertexArray vertexArray;
 
+	glm::vec3 Position = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::vec3 Orientation = glm::vec3(0.0f, 0.0f, -1.0f);
+
 	// Initializes the mesh
 	Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures);
 

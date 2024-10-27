@@ -44,6 +44,7 @@ void Mesh::Draw(Shader& shader, Camera& camera)
 	}
 
 	glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+	glUniform3f(glGetUniformLocation(shader.ID, "position"), Position.x, Position.y, Position.z);
 	camera.Matrix(shader, "camMatrix");
 
 	// Draw the actual mesh

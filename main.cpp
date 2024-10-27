@@ -1,4 +1,4 @@
-#include "Mesh.h"
+#include "Object.h"
 #include "Vertices.h"
 
 const unsigned int windowWidth = 1900;
@@ -64,7 +64,7 @@ int main() {
 	std::vector<Texture> tankTex(tankTextures, tankTextures + sizeof(tankTextures) / sizeof(tankTextures));
 
 	Mesh tank(tankVerts, tankInd, tankTex);
-
+	Object tankObject(tank);
 
 	// Light Shader
 	Shader lightShader("shaders/light.vert", "shaders/light.frag");
@@ -95,7 +95,7 @@ int main() {
 	glUniformMatrix4fv(glGetUniformLocation(tankShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(objModel));
 	glUniform4f(glGetUniformLocation(tankShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(tankShader.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-	glUniform3f(glGetUniformLocation(tankShader.ID, "position"), 1.0f, 0.5f, -2.0f);
+	glUniform3f(glGetUniformLocation(tankShader.ID, "position"), 1.0f, 1.0f, -2.0f);
 
 
 	skyboxShader.Activate();
@@ -105,7 +105,7 @@ int main() {
 	// Enable depth buffer
 	glEnable(GL_DEPTH_TEST);
 
-	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 0.5f, 0.0f));
+	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 1.0f, 3.0f));
 
 	double prevTime = 0.0;
 	double currentTime = 0.0;
@@ -208,12 +208,13 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-		camera.Inputs(window, (float) currentTime);
+		camera.Inputs(window, (float) currentTime, tankObject.mesh.Position);
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
 		floor.Draw(shaderProgram, camera);
 		light.Draw(lightShader, camera);
-		tank.Draw(tankShader, camera);
+		tankObject.HandleInput(window, camera.Orientation, (float)currentTime);
+		tankObject.mesh.Draw(tankShader, camera);
 
 		glDepthFunc(GL_LEQUAL);
 		
