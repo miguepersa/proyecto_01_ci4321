@@ -1,5 +1,7 @@
 #include "Object.h"
 #include "Vertices.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 const unsigned int windowWidth = 1900;
 const unsigned int windowHeight = 1000;
@@ -106,7 +108,7 @@ int main() {
 	// Enable depth buffer
 	glEnable(GL_DEPTH_TEST);
 
-	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 1.0f, 3.0f));
+	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 3.0f, 5.0f));
 
 	double prevTime = 0.0;
 	double currentTime = 0.0;
