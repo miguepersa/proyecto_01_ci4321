@@ -1,11 +1,15 @@
 #include "Object.h"
 #include "Vertices.h"
 #include "Projectile.h"
+#include "Obstacle.h"
+#include <cstdlib>
+#include <ctime>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 const unsigned int windowWidth = 1900;
 const unsigned int windowHeight = 1000;
+float elevationAngleDegrees = 45.0f;
 
 int main() {
 
@@ -70,7 +74,6 @@ int main() {
 	Object tankObject(tank);
 	tankObject.mesh.Position = glm::vec3(0.0f, 0.1f, 0.0f);
 
-	// Texturas para la torreta (puedes usar la misma textura que el tanque o una diferente)
 	Texture turretTextures[]
 	{
 		Texture("textures/tank.jpg", "diffuse", 0)
@@ -83,7 +86,7 @@ int main() {
 	Mesh turretMesh(turretVerts, turretInd, turretTex);
 	Object turretObject(turretMesh);
 
-	// Posición inicial de la torreta (encima del tanque)
+	// Poner torreta encima del tanque
 	turretObject.mesh.Position = tankObject.mesh.Position + glm::vec3(0.0f, 1.5f, 0.0f);
 
 	Texture projectileTextures[]
@@ -97,8 +100,25 @@ int main() {
 
 	Mesh projectileMesh(projectileVerts, projectileInd, projectileTex);
 
-	// Vector para almacenar proyectiles activos
+	// Arreglo de proyectiles activos en pantalla
 	std::vector<Projectile> activeProjectiles;
+
+	Texture obstacleTextures[]
+	{
+		Texture("textures/obstacle.jpg", "diffuse", 0)
+	};
+
+	std::vector<Vertex> cubeVerts(cubeVertices, cubeVertices + sizeof(cubeVertices) / sizeof(Vertex));
+	std::vector<GLuint> cubeInd(cubeIndices, cubeIndices + sizeof(cubeIndices) / sizeof(GLuint));
+	std::vector<Texture> obstacleTex(obstacleTextures, obstacleTextures + sizeof(obstacleTextures) / sizeof(Texture));
+	Mesh cubeMesh(cubeVerts, cubeInd, obstacleTex);
+
+	std::vector<Vertex> pyramidVerts(pyramidVertices, pyramidVertices + sizeof(pyramidVertices) / sizeof(Vertex));
+	std::vector<GLuint> pyramidInd(pyramidIndices, pyramidIndices + sizeof(pyramidIndices) / sizeof(GLuint));
+	Mesh pyramidMesh(pyramidVerts, pyramidInd, obstacleTex);
+
+	// Arreglo de obstaculos presentes en pantalla
+	std::vector<Obstacle> activeObstacles;
 
 	// Light Shader
 	Shader lightShader("shaders/light.vert", "shaders/light.frag");
@@ -242,44 +262,72 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-		// Manejo de entrada del tanque
+		// Manejo de input tanque
 		tankObject.HandleInput(window, camera.Orientation, (float)currentTime, windowWidth, windowHeight);
-
-		// Actualizar la posición de la torreta para que esté siempre encima del tanque
 		turretObject.mesh.Position = tankObject.mesh.Position + glm::vec3(0.0f, 1.5f, 0.0f);
 		//camera.Inputs(window, (float) currentTime, tankObject.mesh.Position);
 		camera.followObject(tankObject.mesh.Position, tankObject.mesh.Orientation);
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
-		static bool canShoot = true; // Variable para evitar disparos continuos
+		static bool canSpawnObstacle = true;
+
+		if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+		{
+
+			if (canSpawnObstacle)
+			{
+				float spawnRange = 10.0f;
+				float randomX = tankObject.mesh.Position.x + ((float(rand()) / float(RAND_MAX)) * spawnRange - spawnRange / 2.0f);
+				float randomZ = tankObject.mesh.Position.z + ((float(rand()) / float(RAND_MAX)) * spawnRange - spawnRange / 2.0f);
+				float randomY = ((float(rand()) / float(RAND_MAX)) * 5);
+
+				glm::vec3 obstaclePosition = glm::vec3(randomX, randomY, randomZ);
+				ObstacleType type = (rand() % 2 == 0) ? CUBE : PYRAMID;
+
+				if (type == CUBE)
+				{
+					Obstacle newObstacle(cubeMesh, obstaclePosition, CUBE);
+					activeObstacles.push_back(newObstacle);
+				}
+				else
+				{
+					Obstacle newObstacle(pyramidMesh, obstaclePosition, PYRAMID);
+					activeObstacles.push_back(newObstacle);
+				}
+
+				canSpawnObstacle = false;
+			}
+		}
+		else
+		{
+			canSpawnObstacle = true;
+		}
+
+		static bool canShoot = true;
 
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 		{
 
 			if (canShoot)
 			{
-				// **Código del Paso 5**
+				glm::vec3 barrelOffset = glm::vec3(0.0f, 0.0f, 0.5f); // ******Cambiar cuando se ponga cañon*********
 
-				// Desplazamiento desde la posición de la torreta hasta la punta del cañón
-				glm::vec3 barrelOffset = glm::vec3(0.0f, 0.0f, 0.5f); // Ajusta según la longitud del cañón
-
-				// Rotar el desplazamiento según la rotación de la torreta
+				// rotar segun rotacion de la torre
 				glm::mat4 turretRotationMatrix = glm::rotate(glm::mat4(1.0f), turretObject.mesh.rotateAngles, glm::vec3(0.0f, 1.0f, 0.0f));
 				glm::vec3 rotatedBarrelOffset = glm::vec3(turretRotationMatrix * glm::vec4(barrelOffset, 1.0f));
 
-				// Posición inicial del proyectil
+				// pos init projectile
 				glm::vec3 projectileStartPos = turretObject.mesh.Position + rotatedBarrelOffset;
 
-				// Dirección del proyectil
+				// direccion
 				glm::vec3 projectileDirection = glm::vec3(sin(turretObject.mesh.rotateAngles), 0.0f, cos(turretObject.mesh.rotateAngles));
 
-				// Crear un nuevo proyectil
 				Projectile newProjectile(projectileMesh, projectileStartPos, projectileDirection, 20.0f);
 
-				// Agregar el proyectil al vector de proyectiles activos
+				// Agregar el proyectil al la lista
 				activeProjectiles.push_back(newProjectile);
 
-				canShoot = false; // Evitar disparos continuos
+				canShoot = false;
 			}
 		}
 		else
@@ -287,18 +335,93 @@ int main() {
 			canShoot = true;
 		}
 
+		// flecha arriba para subir angulo
+		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+		{
+			elevationAngleDegrees += 30.0f * deltaTime;
+			if (elevationAngleDegrees > 89.0f)
+				elevationAngleDegrees = 89.0f; // limite de 90 grados
+		}
+
+		// flecha abajo para disminuir angulo
+		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		{
+			elevationAngleDegrees -= 30.0f * deltaTime;
+			if (elevationAngleDegrees < 1.0f)
+				elevationAngleDegrees = 1.0f; // Limite 1 grado
+		}
+
+		static bool canShootParabolic = true;
+
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+		{
+			
+
+			if (canShootParabolic)
+			{
+				glm::vec3 barrelOffset = glm::vec3(0.0f, 0.0f, 0.5f); // ******Cambiar cuando se ponga cañon*********
+
+				// rotar segun rotacion de la torre
+				glm::mat4 turretRotationMatrix = glm::rotate(glm::mat4(1.0f), turretObject.mesh.rotateAngles, glm::vec3(0.0f, 1.0f, 0.0f));
+				glm::vec3 rotatedBarrelOffset = glm::vec3(turretRotationMatrix * glm::vec4(barrelOffset, 1.0f));
+
+				// pos init projectile
+				glm::vec3 projectileStartPos = turretObject.mesh.Position + rotatedBarrelOffset;
+
+				// Callculo de parabola
+				float elevationAngle = glm::radians(elevationAngleDegrees);
+				glm::vec3 horizontalDirection = glm::vec3(sin(turretObject.mesh.rotateAngles), 0.0f, cos(turretObject.mesh.rotateAngles));
+				glm::vec3 projectileDirection = glm::normalize(glm::vec3(horizontalDirection.x * cos(elevationAngle), sin(elevationAngle), horizontalDirection.z * cos(elevationAngle)));
+				float projectileSpeed = 20.0f;
+
+				Projectile newProjectile(projectileMesh, projectileStartPos, projectileDirection, projectileSpeed, true);
+
+				activeProjectiles.push_back(newProjectile);
+				canShootParabolic = false;
+			}
+		}
+		else
+		{
+			canShootParabolic = true;
+		}
+
 		for (size_t i = 0; i < activeProjectiles.size();)
 		{
 			activeProjectiles[i].Update(deltaTime);
 
-			if (!activeProjectiles[i].IsAlive())
+			bool projectileDestroyed = false;
+
+			// Verificar colisiones
+			for (size_t j = 0; j < activeObstacles.size();)
 			{
-				// Eliminar el proyectil si ha expirado su tiempo de vida
-				activeProjectiles.erase(activeProjectiles.begin() + i);
+				float distance = glm::distance(activeProjectiles[i].position, activeObstacles[j].position);
+				float collisionDistance = activeProjectiles[i].collisionRadius + activeObstacles[j].collisionRadius;
+
+				if (distance <= collisionDistance)
+				{
+					// Si colisionan, se eliminan ambos
+					activeProjectiles.erase(activeProjectiles.begin() + i);
+					activeObstacles.erase(activeObstacles.begin() + j);
+					projectileDestroyed = true;
+					break;
+				}
+				else
+				{
+					++j;
+				}
 			}
-			else
+
+			if (!projectileDestroyed)
 			{
-				++i;
+				// Si el rpoeyctil tienen mucho tiempo de vida, borrarlo
+				if (!activeProjectiles[i].IsAlive())
+				{
+					activeProjectiles.erase(activeProjectiles.begin() + i);
+				}
+				else
+				{
+					++i;
+				}
 			}
 		}
 
@@ -306,9 +429,14 @@ int main() {
 		light.Draw(lightShader, camera);
 		tankObject.mesh.Draw(tankShader, camera);
 		turretObject.mesh.Draw(tankShader, camera);
+		// Usamos shader de tanque porque hacer shaders nuevos es r word
 		for (Projectile& proj : activeProjectiles)
 		{
 			proj.Draw(tankShader, camera);
+		}
+		for (Obstacle& obstacle : activeObstacles)
+		{
+			obstacle.Draw(tankShader, camera);
 		}
 
 

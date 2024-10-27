@@ -19,7 +19,6 @@ class Object {
 		float turretRotationAngle;
 		float tankRotationY;
 		bool firstClick = true;
-		
 		float speed = 5.0f;
 		float prevTime = 0.0f;
 		float deltaTime = 0.0f;

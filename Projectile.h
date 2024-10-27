@@ -14,11 +14,14 @@ public:
     glm::vec3 direction;
     float speed;
     float lifeTime;
+    float collisionRadius;
 
-    // Constructor: solo declaración
-    Projectile(Mesh& mesh, glm::vec3 startPosition, glm::vec3 direction, float speed);
+    bool isParabolic;
+    glm::vec3 velocity;
+    glm::vec3 acceleration;
 
-    // Métodos: solo declaraciones
+    Projectile(Mesh& mesh, glm::vec3 startPosition, glm::vec3 direction, float speed, bool isParabolic = false);
+
     void Update(float deltaTime);
     void Draw(Shader& shader, Camera& camera);
     bool IsAlive() const;
