@@ -65,6 +65,7 @@ int main() {
 
 	Mesh tank(tankVerts, tankInd, tankTex);
 	Object tankObject(tank);
+	tankObject.mesh.Position = glm::vec3(0.0f, 0.25f, 0.0f);
 
 	// Light Shader
 	Shader lightShader("shaders/light.vert", "shaders/light.frag");
@@ -208,12 +209,12 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
+		tankObject.HandleInput(window, camera.Orientation, (float)currentTime);
 		camera.Inputs(window, (float) currentTime, tankObject.mesh.Position);
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
 		floor.Draw(shaderProgram, camera);
 		light.Draw(lightShader, camera);
-		tankObject.HandleInput(window, camera.Orientation, (float)currentTime);
 		tankObject.mesh.Draw(tankShader, camera);
 
 		glDepthFunc(GL_LEQUAL);

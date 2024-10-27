@@ -32,6 +32,10 @@ void main()
 	// calculates current position
 	currentPos = vec3(model * vec4(aPos, 1.0f)) + position;
 
+	if (currentPos.y <= 0.0f) {
+		currentPos.y = 0.0f;
+	}
+
 	// Assigns the colors from the Vertex Data to "color"
 	color = aColor;
 	// Assigns the texture coordinates from the Vertex Data to "texCoord"

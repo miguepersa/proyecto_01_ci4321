@@ -61,7 +61,8 @@ void Camera::Inputs(GLFWwindow* window, float currentTime, glm::vec3 targetPosit
 	
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
 	
-		if (Position.y >= 0.5f) Position += realSpeed * -Up;
+		if (Position.y >= 0.0f) Position += realSpeed * -Up;
+		else Position.y = 0.0f;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {

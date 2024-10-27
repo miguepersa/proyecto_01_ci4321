@@ -38,7 +38,8 @@ void Object::HandleInput(GLFWwindow* window, glm::vec3 Orientation, float curren
 
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
 
-		if (mesh.Position.y >= 0.5f) mesh.Position += realSpeed * -Up;
+		if (mesh.Position.y >= 0.0f) mesh.Position += realSpeed * -Up;
+		else mesh.Position.y = 0.0f;
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
