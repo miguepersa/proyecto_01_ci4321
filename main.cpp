@@ -1,148 +1,8 @@
-#include "Mesh.h"
+#include "Object.h"
+#include "Vertices.h"
 
 const unsigned int windowWidth = 1900;
 const unsigned int windowHeight = 1000;
-
-float skyboxVertices[] =
-{
-	//   Coordinates
-	-1.0f, -1.0f,  1.0f,//        7--------6
-	 1.0f, -1.0f,  1.0f,//       /|       /|
-	 1.0f, -1.0f, -1.0f,//      4--------5 |
-	-1.0f, -1.0f, -1.0f,//      | |      | |
-	-1.0f,  1.0f,  1.0f,//      | 3------|-2
-	 1.0f,  1.0f,  1.0f,//      |/       |/
-	 1.0f,  1.0f, -1.0f,//      0--------1
-	-1.0f,  1.0f, -1.0f
-};
-
-unsigned int skyboxIndices[] =
-{
-	// Right
-	1, 2, 6,
-	6, 5, 1,
-	// Left
-	0, 4, 7,
-	7, 3, 0,
-	// Top
-	4, 5, 6,
-	6, 7, 4,
-	// Bottom
-	0, 3, 2,
-	2, 1, 0,
-	// Back
-	0, 1, 5,
-	5, 4, 0,
-	// Front
-	3, 7, 6,
-	6, 2, 3
-};
-
-Vertex floorVertices[] =
-{ //               COORDINATES           /            COLORS          /           NORMALS         /       TEXTURE COORDINATES    //
-	Vertex{glm::vec3(-50.0f, 0.0f,  50.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(-50.0f, 0.0f, -50.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 25.0f)},
-	Vertex{glm::vec3( 50.0f, 0.0f, -50.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(25.0f, 25.0f)},
-	Vertex{glm::vec3( 50.0f, 0.0f,  50.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(25.0f, 0.0f)}
-};
-
-// Indices for vertices order
-GLuint floorIndices[] =
-{
-	0, 1, 2,
-	0, 2, 3
-};
-
-Vertex lightVertices[] =
-{ //     COORDINATES     //
-	Vertex{glm::vec3(-0.1f, -0.1f,  0.1f)},
-	Vertex{glm::vec3(-0.1f, -0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f, -0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f, -0.1f,  0.1f)},
-	Vertex{glm::vec3(-0.1f,  0.1f,  0.1f)},
-	Vertex{glm::vec3(-0.1f,  0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f,  0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f,  0.1f,  0.1f)}
-};
-
-GLuint lightIndices[] =
-{
-	0, 1, 2,
-	0, 2, 3,
-	0, 4, 7,
-	0, 7, 3,
-	3, 7, 6,
-	3, 6, 2,
-	2, 6, 5,
-	2, 5, 1,
-	1, 5, 4,
-	1, 4, 0,
-	4, 5, 6,
-	4, 6, 7
-};
-
-// verts del tanke
-Vertex tankVertices[] =
-{
-	// Base
-	Vertex{glm::vec3(-1.0f, 0.0f, -2.0f), glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(1.0f, 0.0f, -2.0f), glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(1.0f, 0.0f)},
-	Vertex{glm::vec3(1.0f, 0.0f,  2.0f), glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(1.0f, 1.0f)},
-	Vertex{glm::vec3(-1.0f, 0.0f,  2.0f), glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(0.0f, 1.0f)},
-	Vertex{glm::vec3(-1.0f, 1.0f, -2.0f), glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(0.0f,  1.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(1.0f, 1.0f, -2.0f), glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(0.0f,  1.0f, 0.0f), glm::vec2(1.0f, 0.0f)},
-	Vertex{glm::vec3(1.0f, 1.0f,  2.0f), glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(0.0f,  1.0f, 0.0f), glm::vec2(1.0f, 1.0f)},
-	Vertex{glm::vec3(-1.0f, 1.0f,  2.0f), glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(0.0f,  1.0f, 0.0f), glm::vec2(0.0f, 1.0f)},
-
-	// Torreta
-	Vertex{glm::vec3(-0.5f, 1.0f, -0.75f), glm::vec3(0.0f, 0.6f, 0.0f), glm::vec3(0.0f,  1.0f, 0.0f), glm::vec2(0.0f, 0.0f)}, 
-	Vertex{glm::vec3(0.5f, 1.0f, -0.75f), glm::vec3(0.0f, 0.6f, 0.0f), glm::vec3(0.0f,  1.0f, 0.0f), glm::vec2(1.0f, 0.0f)},
-	Vertex{glm::vec3(0.5f, 1.0f,  0.75f), glm::vec3(0.0f, 0.6f, 0.0f), glm::vec3(0.0f,  1.0f, 0.0f), glm::vec2(1.0f, 1.0f)},
-	Vertex{glm::vec3(-0.5f, 1.0f,  0.75f), glm::vec3(0.0f, 0.6f, 0.0f), glm::vec3(0.0f,  1.0f, 0.0f), glm::vec2(0.0f, 1.0f)},
-	Vertex{glm::vec3(-0.5f, 1.7f, -0.75f), glm::vec3(0.0f, 0.6f, 0.0f), glm::vec3(0.0f,  0.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(0.5f, 1.7f, -0.75f), glm::vec3(0.0f, 0.6f, 0.0f), glm::vec3(0.0f,  0.0f, 1.0f), glm::vec2(1.0f, 0.0f)},
-	Vertex{glm::vec3(0.5f, 1.7f,  0.75f), glm::vec3(0.0f, 0.6f, 0.0f), glm::vec3(0.0f,  0.0f, 1.0f), glm::vec2(1.0f, 1.0f)},
-	Vertex{glm::vec3(-0.5f, 1.7f,  0.75f), glm::vec3(0.0f, 0.6f, 0.0f), glm::vec3(0.0f,  0.0f, 1.0f), glm::vec2(0.0f, 1.0f)},
-
-	// Cannon
-	Vertex{glm::vec3(-0.1f, 1.6f, -0.75f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(0.1f, 1.6f, -0.75f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec2(1.0f, 0.0f)},
-	Vertex{glm::vec3(0.1f, 1.6f, -2.75f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec2(1.0f, 1.0f)},
-	Vertex{glm::vec3(-0.1f, 1.6f, -2.75f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec2(0.0f, 1.0f)},
-	Vertex{glm::vec3(-0.1f, 1.8f, -0.75f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(0.1f, 1.8f, -0.75f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec2(1.0f, 0.0f)},
-	Vertex{glm::vec3(0.1f, 1.8f, -2.75f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec2(1.0f, 1.0f)},
-	Vertex{glm::vec3(-0.1f, 1.8f, -2.75f), glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec2(0.0f, 1.0f)}
-};
-
-// Tank Index
-GLuint tankIndices[] =
-{
-	// Base
-	0, 1, 2, 0, 2, 3,       // Cara inferior
-	4, 5, 6, 4, 6, 7,       // Cara superior
-	0, 1, 5, 0, 5, 4,       // Cara posterior
-	2, 3, 7, 2, 7, 6,       // Cara frontal
-	1, 2, 6, 1, 6, 5,       // Cara derecha
-	0, 3, 7, 0, 7, 4,       // Cara izquierda
-
-	// Torreta
-	8, 9, 10, 8, 10, 11,    // Cara inferior
-	12, 13, 14, 12, 14, 15, // Cara superior
-	8, 9, 13, 8, 13, 12,    // Cara posterior
-	10, 11, 15, 10, 15, 14, // Cara frontal
-	9, 10, 14, 9, 14, 13,   // Cara derecha
-	8, 11, 15, 8, 15, 12,   // Cara izquierda
-
-	// Cannon
-	16, 17, 18, 16, 18, 19, // Cara inferior
-	20, 21, 22, 20, 22, 23, // Cara superior
-	16, 17, 21, 16, 21, 20, // Cara posterior
-	18, 19, 23, 18, 23, 22, // Cara frontal
-	17, 18, 22, 17, 22, 21, // Cara derecha
-	16, 19, 23, 16, 23, 20  // Cara izquierda
-};
-
 
 int main() {
 
@@ -184,6 +44,7 @@ int main() {
 
 	// Generate shader program
 	Shader shaderProgram("shaders/default.vert", "shaders/default.frag");
+	Shader tankShader("shaders/default.vert", "shaders/default.frag");
 	Shader skyboxShader("shaders/skybox.vert", "shaders/skybox.frag");
 
 	std::vector<Vertex> floorVerts(floorVertices, floorVertices + sizeof(floorVertices) / sizeof(Vertex));
@@ -192,18 +53,24 @@ int main() {
 
 	Mesh floor(floorVerts, floorInd, floorTex);
 
+	Texture tankTextures[]
+	{
+		Texture("textures/tank.jpg", "diffuse", 0)
+
+	};
+
+	std::vector<Vertex> tankVerts(tankVertices, tankVertices + sizeof(tankVertices) / sizeof(Vertex));
+	std::vector<GLuint> tankInd(tankIndices, tankIndices + sizeof(tankIndices) / sizeof(GLuint));
+	std::vector<Texture> tankTex(tankTextures, tankTextures + sizeof(tankTextures) / sizeof(tankTextures));
+
+	Mesh tank(tankVerts, tankInd, tankTex);
+	Object tankObject(tank);
+
 	// Light Shader
 	Shader lightShader("shaders/light.vert", "shaders/light.frag");
 	std::vector<Vertex> lightVerts(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(Vertex));
 	std::vector<GLuint> lightInd(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(GLuint) );
 	Mesh light(lightVerts, lightInd, floorTex);
-
-	// tank mesh
-	std::vector<Vertex> tankVerts(tankVertices, tankVertices + sizeof(tankVertices) / sizeof(Vertex));
-	std::vector<GLuint> tankInd(tankIndices, tankIndices + sizeof(tankIndices) / sizeof(GLuint));
-	Texture tankTexture("textures/tank_texture.jpg", "diffuse", 0);
-	std::vector<Texture> tankTex = { tankTexture };
-	Mesh tank(tankVerts, tankInd, tankTex);
 	
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 lightPos = glm::vec3(1.0f, 10.0f, 1.0f);
@@ -222,6 +89,14 @@ int main() {
 	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(objModel));
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	glUniform3f(glGetUniformLocation(shaderProgram.ID, "position"), 0.0f, 0.0f, 0.0f );
+
+	tankShader.Activate();
+	glUniformMatrix4fv(glGetUniformLocation(tankShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(objModel));
+	glUniform4f(glGetUniformLocation(tankShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(tankShader.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	glUniform3f(glGetUniformLocation(tankShader.ID, "position"), 1.0f, 1.0f, -2.0f);
+
 
 	skyboxShader.Activate();
 	glUniform1i(glGetUniformLocation(skyboxShader.ID, "skybox"), 0);
@@ -230,7 +105,7 @@ int main() {
 	// Enable depth buffer
 	glEnable(GL_DEPTH_TEST);
 
-	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 0.5f, 0.0f));
+	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 1.0f, 3.0f));
 
 	double prevTime = 0.0;
 	double currentTime = 0.0;
@@ -333,12 +208,13 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-		camera.Inputs(window, (float) currentTime);
+		camera.Inputs(window, (float) currentTime, tankObject.mesh.Position);
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
 		floor.Draw(shaderProgram, camera);
 		light.Draw(lightShader, camera);
-		tank.Draw(shaderProgram, camera);
+		tankObject.HandleInput(window, camera.Orientation, (float)currentTime);
+		tankObject.mesh.Draw(tankShader, camera);
 
 		glDepthFunc(GL_LEQUAL);
 		
@@ -373,7 +249,6 @@ int main() {
 	shaderProgram.Delete();
 	lightShader.Delete();
 	skyboxShader.Delete();
-
 
 	// Window closing
 	glfwDestroyWindow(window);

@@ -1,35 +1,12 @@
-﻿  Camera.cpp
-C:\Users\gabri\OneDrive\Documents\USB\Sep - Dic 2024\Computacion Grafica\Proyectos VSCode\Camera.h(4,10): error C1083: Cannot open include file: 'glad/glad.h': No such file or directory
-  (compiling source file 'Camera.cpp')
+﻿  Mesh.cpp
+C:\Users\migue\Desktop\OpenGL\GL_FCC\Mesh.cpp(51,43): warning C4267: 'argumento': conversión de 'size_t' a 'GLsizei'; posible pérdida de datos
+  Object.cpp
+C:\Users\migue\Desktop\OpenGL\GL_FCC\Object.h(9,10): warning C4067: símbolos (token) inesperados después de la directiva del preprocesador; se esperaba una nueva línea
+  (compilando archivo de origen "Object.cpp")
   
   main.cpp
-C:\Users\gabri\OneDrive\Documents\USB\Sep - Dic 2024\Computacion Grafica\Proyectos VSCode\VertexArray.h(4,10): error C1083: Cannot open include file: 'glad/glad.h': No such file or directory
-  (compiling source file 'main.cpp')
+C:\Users\migue\Desktop\OpenGL\GL_FCC\Object.h(9,10): warning C4067: símbolos (token) inesperados después de la directiva del preprocesador; se esperaba una nueva línea
+  (compilando archivo de origen "main.cpp")
   
-  Mesh.cpp
-C:\Users\gabri\OneDrive\Documents\USB\Sep - Dic 2024\Computacion Grafica\Proyectos VSCode\VertexArray.h(4,10): error C1083: Cannot open include file: 'glad/glad.h': No such file or directory
-  (compiling source file 'Mesh.cpp')
-  
-  Shader.cpp
-C:\Users\gabri\OneDrive\Documents\USB\Sep - Dic 2024\Computacion Grafica\Proyectos VSCode\Shader.h(4,10): error C1083: Cannot open include file: 'glad/glad.h': No such file or directory
-  (compiling source file 'Shader.cpp')
-  
-  ElementBuffer.cpp
-C:\Users\gabri\OneDrive\Documents\USB\Sep - Dic 2024\Computacion Grafica\Proyectos VSCode\ElementBuffer.h(4,10): error C1083: Cannot open include file: 'glad/glad.h': No such file or directory
-  (compiling source file 'ElementBuffer.cpp')
-  
-  stb.cpp
-C:\Users\gabri\OneDrive\Documents\USB\Sep - Dic 2024\Computacion Grafica\Proyectos VSCode\stb.cpp(2,10): error C1083: Cannot open include file: 'stb/stb_image.h': No such file or directory
-  Texture.cpp
-C:\Users\gabri\OneDrive\Documents\USB\Sep - Dic 2024\Computacion Grafica\Proyectos VSCode\Texture.h(4,10): error C1083: Cannot open include file: 'glad/glad.h': No such file or directory
-  (compiling source file 'Texture.cpp')
-  
-  VertexArray.cpp
-C:\Users\gabri\OneDrive\Documents\USB\Sep - Dic 2024\Computacion Grafica\Proyectos VSCode\VertexArray.h(4,10): error C1083: Cannot open include file: 'glad/glad.h': No such file or directory
-  (compiling source file 'VertexArray.cpp')
-  
-  VertexBuffer.cpp
-C:\Users\gabri\OneDrive\Documents\USB\Sep - Dic 2024\Computacion Grafica\Proyectos VSCode\VertexBuffer.h(4,10): error C1083: Cannot open include file: 'glm/glm.hpp': No such file or directory
-  (compiling source file 'VertexBuffer.cpp')
-  
-  Generating Code...
+  Generando código...
+  GL_FCC.vcxproj -> C:\Users\migue\Desktop\OpenGL\GL_FCC\x64\Debug\GL_FCC.exe
