@@ -28,6 +28,11 @@ void Camera::Matrix(Shader& shader, const char* uniform) {
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
 }
 
+void Camera::followObject(glm::vec3 position, glm::vec3 orientation) {
+	Position = position + (10.0f * glm::vec3(-Orientation.x, 0.3f, -Orientation.z));
+	Orientation = glm::normalize(orientation);
+}
+
 void Camera::Inputs(GLFWwindow* window, float currentTime, glm::vec3 targetPosition) {
 
 	deltaTime = currentTime - prevTime;

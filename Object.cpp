@@ -23,7 +23,7 @@ void Object::HandleInput(GLFWwindow* window, glm::vec3 cameraOrientation, float 
         tankRotationY -= 70.0f * deltaTime;  // Rotate right
     }
 
-    mesh.rotateAngles = glm::radians(tankRotationY);
+    mesh.rotateAngles = glm::radians(-tankRotationY);
 
     // Calculate forward direction based on tank's rotation
     glm::vec3 forwardDir = glm::vec3(sin(glm::radians(tankRotationY)), 0.0f, cos(glm::radians(tankRotationY)));
@@ -37,7 +37,7 @@ void Object::HandleInput(GLFWwindow* window, glm::vec3 cameraOrientation, float 
     }
 
     // Update the tank's orientation based on rotation
-    mesh.Orientation = glm::vec3(sin(glm::radians(tankRotationY)), 0.0f, cos(glm::radians(tankRotationY)));
+    mesh.Orientation = glm::normalize(forwardDir);
 
     // Mouse position capture
     double mouseX, mouseY;
@@ -58,12 +58,12 @@ void Object::HandleInput(GLFWwindow* window, glm::vec3 cameraOrientation, float 
     this->turretRotationAngle = turretRotation;
 
     // Additional input handling (optional) for altitude control and speed boost
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-        mesh.Position += realSpeed * Up;
-    }
-    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-        if (mesh.Position.y >= 0.5f) mesh.Position += realSpeed * -Up;
-    }
+    //if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+    //    mesh.Position += realSpeed * Up;
+    //}
+    //if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+    //    if (mesh.Position.y >= 0.5f) mesh.Position += realSpeed * -Up;
+    //}
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
         speed = 15.0f;
     }

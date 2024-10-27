@@ -37,6 +37,7 @@ class Camera {
 		void updateMatrix(float FOVdeg, float nearPlane, float farPlane);
 		// Exports the camera matrix to a shader
 		void Matrix(Shader& shader, const char* uniform);
+		void followObject(glm::vec3 position, glm::vec3 orientation);
 		// Handles camera inputs
 		void Inputs(GLFWwindow* window, float currentTime, glm::vec3 target);
 };

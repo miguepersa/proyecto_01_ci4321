@@ -71,5 +71,5 @@ void main()
 {
 
 	// outputs final color
-	FragColor = pointLight();
+	FragColor = directLight();
 }
