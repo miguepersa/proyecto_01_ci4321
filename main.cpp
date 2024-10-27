@@ -1,85 +1,8 @@
 #include "Mesh.h"
+#include "Vertices.h"
 
 const unsigned int windowWidth = 1900;
 const unsigned int windowHeight = 1000;
-
-float skyboxVertices[] =
-{
-	//   Coordinates
-	-1.0f, -1.0f,  1.0f,//        7--------6
-	 1.0f, -1.0f,  1.0f,//       /|       /|
-	 1.0f, -1.0f, -1.0f,//      4--------5 |
-	-1.0f, -1.0f, -1.0f,//      | |      | |
-	-1.0f,  1.0f,  1.0f,//      | 3------|-2
-	 1.0f,  1.0f,  1.0f,//      |/       |/
-	 1.0f,  1.0f, -1.0f,//      0--------1
-	-1.0f,  1.0f, -1.0f
-};
-
-unsigned int skyboxIndices[] =
-{
-	// Right
-	1, 2, 6,
-	6, 5, 1,
-	// Left
-	0, 4, 7,
-	7, 3, 0,
-	// Top
-	4, 5, 6,
-	6, 7, 4,
-	// Bottom
-	0, 3, 2,
-	2, 1, 0,
-	// Back
-	0, 1, 5,
-	5, 4, 0,
-	// Front
-	3, 7, 6,
-	6, 2, 3
-};
-
-Vertex floorVertices[] =
-{ //               COORDINATES           /            COLORS          /           NORMALS         /       TEXTURE COORDINATES    //
-	Vertex{glm::vec3(-50.0f, 0.0f,  50.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(-50.0f, 0.0f, -50.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 25.0f)},
-	Vertex{glm::vec3( 50.0f, 0.0f, -50.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(25.0f, 25.0f)},
-	Vertex{glm::vec3( 50.0f, 0.0f,  50.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(25.0f, 0.0f)}
-};
-
-// Indices for vertices order
-GLuint floorIndices[] =
-{
-	0, 1, 2,
-	0, 2, 3
-};
-
-Vertex lightVertices[] =
-{ //     COORDINATES     //
-	Vertex{glm::vec3(-0.1f, -0.1f,  0.1f)},
-	Vertex{glm::vec3(-0.1f, -0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f, -0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f, -0.1f,  0.1f)},
-	Vertex{glm::vec3(-0.1f,  0.1f,  0.1f)},
-	Vertex{glm::vec3(-0.1f,  0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f,  0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f,  0.1f,  0.1f)}
-};
-
-GLuint lightIndices[] =
-{
-	0, 1, 2,
-	0, 2, 3,
-	0, 4, 7,
-	0, 7, 3,
-	3, 7, 6,
-	3, 6, 2,
-	2, 6, 5,
-	2, 5, 1,
-	1, 5, 4,
-	1, 4, 0,
-	4, 5, 6,
-	4, 6, 7
-};
 
 int main() {
 
@@ -121,6 +44,7 @@ int main() {
 
 	// Generate shader program
 	Shader shaderProgram("shaders/default.vert", "shaders/default.frag");
+	Shader tankShader("shaders/default.vert", "shaders/default.frag");
 	Shader skyboxShader("shaders/skybox.vert", "shaders/skybox.frag");
 
 	std::vector<Vertex> floorVerts(floorVertices, floorVertices + sizeof(floorVertices) / sizeof(Vertex));
@@ -128,6 +52,19 @@ int main() {
 	std::vector<Texture> floorTex(floorTextures, floorTextures + sizeof(floorTextures) / sizeof(floorTextures));
 
 	Mesh floor(floorVerts, floorInd, floorTex);
+
+	Texture tankTextures[]
+	{
+		Texture("textures/tank.jpg", "diffuse", 0)
+
+	};
+
+	std::vector<Vertex> tankVerts(tankVertices, tankVertices + sizeof(tankVertices) / sizeof(Vertex));
+	std::vector<GLuint> tankInd(tankIndices, tankIndices + sizeof(tankIndices) / sizeof(GLuint));
+	std::vector<Texture> tankTex(tankTextures, tankTextures + sizeof(tankTextures) / sizeof(tankTextures));
+
+	Mesh tank(tankVerts, tankInd, tankTex);
+
 
 	// Light Shader
 	Shader lightShader("shaders/light.vert", "shaders/light.frag");
@@ -152,6 +89,14 @@ int main() {
 	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(objModel));
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	glUniform3f(glGetUniformLocation(shaderProgram.ID, "position"), 0.0f, 0.0f, 0.0f );
+
+	tankShader.Activate();
+	glUniformMatrix4fv(glGetUniformLocation(tankShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(objModel));
+	glUniform4f(glGetUniformLocation(tankShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(tankShader.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	glUniform3f(glGetUniformLocation(tankShader.ID, "position"), 1.0f, 0.5f, -2.0f);
+
 
 	skyboxShader.Activate();
 	glUniform1i(glGetUniformLocation(skyboxShader.ID, "skybox"), 0);
@@ -268,6 +213,7 @@ int main() {
 
 		floor.Draw(shaderProgram, camera);
 		light.Draw(lightShader, camera);
+		tank.Draw(tankShader, camera);
 
 		glDepthFunc(GL_LEQUAL);
 		

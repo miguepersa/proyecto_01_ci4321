@@ -74,6 +74,12 @@
     <ClInclude Include="Mesh.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertices.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\skybox\back.jpg">
@@ -101,6 +107,9 @@
       <Filter>Archivos de recursos\Textures</Filter>
     </Image>
     <Image Include="textures\b1.jpg">
+      <Filter>Archivos de recursos\Textures</Filter>
+    </Image>
+    <Image Include="textures\tank.jpg">
       <Filter>Archivos de recursos\Textures</Filter>
     </Image>
   </ItemGroup>

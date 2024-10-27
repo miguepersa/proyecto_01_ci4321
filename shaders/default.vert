@@ -24,11 +24,13 @@ uniform mat4 camMatrix;
 // Imports the model matrix from the main function
 uniform mat4 model;
 
+uniform vec3 position;
+
 
 void main()
 {
 	// calculates current position
-	currentPos = vec3(model * vec4(aPos, 1.0f));
+	currentPos = vec3(model * vec4(aPos, 1.0f)) + position;
 
 	// Assigns the colors from the Vertex Data to "color"
 	color = aColor;
