@@ -69,6 +69,22 @@ int main() {
 	Object tankObject(tank);
 	tankObject.mesh.Position = glm::vec3(0.0f, 0.1f, 0.0f);
 
+	// Texturas para la torreta (puedes usar la misma textura que el tanque o una diferente)
+	Texture turretTextures[]
+	{
+		Texture("textures/tank.jpg", "diffuse", 0)
+	};
+
+	std::vector<Vertex> turretVerts(turretVertices, turretVertices + sizeof(turretVertices) / sizeof(Vertex));
+	std::vector<GLuint> turretInd(turretIndices, turretIndices + sizeof(turretIndices) / sizeof(GLuint));
+	std::vector<Texture> turretTex(turretTextures, turretTextures + sizeof(turretTextures) / sizeof(turretTextures));
+
+	Mesh turretMesh(turretVerts, turretInd, turretTex);
+	Object turretObject(turretMesh);
+
+	// Posición inicial de la torreta (encima del tanque)
+	turretObject.mesh.Position = tankObject.mesh.Position + glm::vec3(0.0f, 1.5f, 0.0f);
+
 	// Light Shader
 	Shader lightShader("shaders/light.vert", "shaders/light.frag");
 	std::vector<Vertex> lightVerts(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(Vertex));
@@ -211,7 +227,11 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
+		// Manejo de entrada del tanque
 		tankObject.HandleInput(window, camera.Orientation, (float)currentTime, windowWidth, windowHeight);
+
+		// Actualizar la posición de la torreta para que esté siempre encima del tanque
+		turretObject.mesh.Position = tankObject.mesh.Position + glm::vec3(0.0f, 1.5f, 0.0f);
 		//camera.Inputs(window, (float) currentTime, tankObject.mesh.Position);
 		camera.followObject(tankObject.mesh.Position, tankObject.mesh.Orientation);
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
@@ -219,6 +239,7 @@ int main() {
 		floor.Draw(shaderProgram, camera);
 		light.Draw(lightShader, camera);
 		tankObject.mesh.Draw(tankShader, camera);
+		turretObject.mesh.Draw(tankShader, camera);
 
 		glDepthFunc(GL_LEQUAL);
 		
