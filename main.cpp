@@ -11,6 +11,8 @@ const unsigned int windowWidth = 1900;
 const unsigned int windowHeight = 1000;
 float elevationAngleDegrees = 45.0f;
 
+void spawnObstacles(float x, float z, Mesh cubeMesh, Mesh pyramidMesh, std::vector<Obstacle>& activeObstacles);
+
 int main() {
 
 	// GLFW Initialization
@@ -71,10 +73,6 @@ int main() {
 	std::vector<GLuint> tankInd(tankIndices, tankIndices + sizeof(tankIndices) / sizeof(GLuint));
 	std::vector<Texture> tankTex(tankTextures, tankTextures + sizeof(tankTextures) / sizeof(tankTextures));
 
-	Mesh tank(tankVerts, tankInd, tankTex);
-	Object tankObject(tank);
-	tankObject.mesh.Position = glm::vec3(0.0f, 0.1f, 0.0f);
-
 	// Texturas para la torreta (puedes usar la misma textura que el tanque o una diferente)
 	Texture turretTextures[]
 	{
@@ -85,12 +83,37 @@ int main() {
 	std::vector<GLuint> turretInd(turretIndices, turretIndices + sizeof(turretIndices) / sizeof(GLuint));
 	std::vector<Texture> turretTex(turretTextures, turretTextures + sizeof(turretTextures) / sizeof(turretTextures));
 
-	Mesh turretMesh(turretVerts, turretInd, turretTex);
-	Object turretObject(turretMesh);
+	
+	std::vector<Mesh>tankMeshes = { Mesh(tankVerts, tankInd, tankTex), Mesh(turretVerts, turretInd, turretTex) };
+
+	Texture projectileTextures[]
+	{
+		Texture("textures/projectile.jpg", "diffuse", 0)
+	};
+	std::vector<Vertex> projectileVerts(projectileVertices, projectileVertices + sizeof(projectileVertices) / sizeof(Vertex));
+	std::vector<GLuint> projectileInd(projectileIndices, projectileIndices + sizeof(projectileIndices) / sizeof(GLuint));
+	std::vector<Texture> projectileTex(projectileTextures, projectileTextures + sizeof(projectileTextures) / sizeof(Texture));
+	Mesh projectileMesh(projectileVerts, projectileInd, projectileTex);
+	// Vector para almacenar proyectiles activos
+	std::vector<Projectile> activeProjectiles;
 
 	Object tankObject(tankMeshes);
 	tankObject.setMeshOffset(glm::vec3(0.0f, 0.0f, 0.0f), 0);
 	tankObject.setMeshOffset(glm::vec3(0.0f, 1.0f, 0.0f), 1);
+
+	Texture obstacleTextures[]
+	{
+		Texture("textures/obstacle.jpg", "diffuse", 0)
+	};
+	std::vector<Vertex> cubeVerts(cubeVertices, cubeVertices + sizeof(cubeVertices) / sizeof(Vertex));
+	std::vector<GLuint> cubeInd(cubeIndices, cubeIndices + sizeof(cubeIndices) / sizeof(GLuint));
+	std::vector<Texture> obstacleTex(obstacleTextures, obstacleTextures + sizeof(obstacleTextures) / sizeof(Texture));
+	Mesh cubeMesh(cubeVerts, cubeInd, obstacleTex);
+	std::vector<Vertex> pyramidVerts(pyramidVertices, pyramidVertices + sizeof(pyramidVertices) / sizeof(Vertex));
+	std::vector<GLuint> pyramidInd(pyramidIndices, pyramidIndices + sizeof(pyramidIndices) / sizeof(GLuint));
+	Mesh pyramidMesh(pyramidVerts, pyramidInd, obstacleTex);
+	// Arreglo de obstaculos presentes en pantalla
+	std::vector<Obstacle> activeObstacles;
 
 	// Light Shader
 	Shader lightShader("shaders/light.vert", "shaders/light.frag");
@@ -255,24 +278,7 @@ int main() {
 
 			if (canSpawnObstacle)
 			{
-				float spawnRange = 10.0f;
-				float randomX = tankObject.mesh.Position.x + ((float(rand()) / float(RAND_MAX)) * spawnRange - spawnRange / 2.0f);
-				float randomZ = tankObject.mesh.Position.z + ((float(rand()) / float(RAND_MAX)) * spawnRange - spawnRange / 2.0f);
-				float randomY = ((float(rand()) / float(RAND_MAX)) * 5);
-
-				glm::vec3 obstaclePosition = glm::vec3(randomX, randomY, randomZ);
-				ObstacleType type = (rand() % 2 == 0) ? CUBE : PYRAMID;
-
-				if (type == CUBE)
-				{
-					Obstacle newObstacle(cubeMesh, obstaclePosition, CUBE);
-					activeObstacles.push_back(newObstacle);
-				}
-				else
-				{
-					Obstacle newObstacle(pyramidMesh, obstaclePosition, PYRAMID);
-					activeObstacles.push_back(newObstacle);
-				}
+				spawnObstacles(tankObject.Position.x, tankObject.Position.z, cubeMesh, pyramidMesh, activeObstacles);
 
 				canSpawnObstacle = false;
 			}
@@ -292,14 +298,14 @@ int main() {
 				glm::vec3 barrelOffset = glm::vec3(0.0f, 0.0f, 0.5f); // ******Cambiar cuando se ponga ca�on*********
 
 				// rotar segun rotacion de la torre
-				glm::mat4 turretRotationMatrix = glm::rotate(glm::mat4(1.0f), turretObject.mesh.rotateAngles, glm::vec3(0.0f, 1.0f, 0.0f));
+				glm::mat4 turretRotationMatrix = glm::rotate(glm::mat4(1.0f), tankObject.meshes[1].rotateAngles, glm::vec3(0.0f, 1.0f, 0.0f));
 				glm::vec3 rotatedBarrelOffset = glm::vec3(turretRotationMatrix * glm::vec4(barrelOffset, 1.0f));
 
 				// pos init projectile
-				glm::vec3 projectileStartPos = turretObject.mesh.Position + rotatedBarrelOffset;
+				glm::vec3 projectileStartPos = tankObject.meshes[1].Position + rotatedBarrelOffset;
 
 				// direccion
-				glm::vec3 projectileDirection = glm::vec3(sin(turretObject.mesh.rotateAngles), 0.0f, cos(turretObject.mesh.rotateAngles));
+				glm::vec3 projectileDirection = glm::vec3(sin(tankObject.meshes[1].rotateAngles), 0.0f, cos(tankObject.meshes[1].rotateAngles));
 
 				Projectile newProjectile(projectileMesh, projectileStartPos, projectileDirection, 20.0f);
 
@@ -341,15 +347,15 @@ int main() {
 				glm::vec3 barrelOffset = glm::vec3(0.0f, 0.0f, 0.5f); // ******Cambiar cuando se ponga ca�on*********
 
 				// rotar segun rotacion de la torre
-				glm::mat4 turretRotationMatrix = glm::rotate(glm::mat4(1.0f), turretObject.mesh.rotateAngles, glm::vec3(0.0f, 1.0f, 0.0f));
+				glm::mat4 turretRotationMatrix = glm::rotate(glm::mat4(1.0f), tankObject.meshes[1].rotateAngles, glm::vec3(0.0f, 1.0f, 0.0f));
 				glm::vec3 rotatedBarrelOffset = glm::vec3(turretRotationMatrix * glm::vec4(barrelOffset, 1.0f));
 
 				// pos init projectile
-				glm::vec3 projectileStartPos = turretObject.mesh.Position + rotatedBarrelOffset;
+				glm::vec3 projectileStartPos = tankObject.meshes[1].Position + rotatedBarrelOffset;
 
 				// Callculo de parabola
 				float elevationAngle = glm::radians(elevationAngleDegrees);
-				glm::vec3 horizontalDirection = glm::vec3(sin(turretObject.mesh.rotateAngles), 0.0f, cos(turretObject.mesh.rotateAngles));
+				glm::vec3 horizontalDirection = glm::vec3(sin(tankObject.meshes[1].rotateAngles), 0.0f, cos(tankObject.meshes[1].rotateAngles));
 				glm::vec3 projectileDirection = glm::normalize(glm::vec3(horizontalDirection.x * cos(elevationAngle), sin(elevationAngle), horizontalDirection.z * cos(elevationAngle)));
 				float projectileSpeed = 20.0f;
 
@@ -459,4 +465,26 @@ int main() {
 	glfwTerminate();
 
 	return 0;
+}
+
+void spawnObstacles(float x, float z, Mesh cubeMesh, Mesh pyramidMesh, std::vector<Obstacle>& activeObstacles)
+{
+	float spawnRange = 10.0f;
+	float randomX = x + ((float(rand()) / float(RAND_MAX)) * spawnRange - spawnRange / 2.0f);
+	float randomZ = z + ((float(rand()) / float(RAND_MAX)) * spawnRange - spawnRange / 2.0f);
+	float randomY = ((float(rand()) / float(RAND_MAX)) * 5);
+
+	glm::vec3 obstaclePosition = glm::vec3(randomX, randomY, randomZ);
+	ObstacleType type = (rand() % 2 == 0) ? CUBE : PYRAMID;
+
+	if (type == CUBE)
+	{
+		Obstacle newObstacle(cubeMesh, obstaclePosition, CUBE);
+		activeObstacles.push_back(newObstacle);
+	}
+	else
+	{
+		Obstacle newObstacle(pyramidMesh, obstaclePosition, PYRAMID);
+		activeObstacles.push_back(newObstacle);
+	}
 }

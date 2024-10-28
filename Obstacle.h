@@ -18,7 +18,7 @@ public:
     float collisionRadius;
 
     Obstacle(Mesh& mesh, glm::vec3 position, ObstacleType type);
-
+    
     void Draw(Shader& shader, Camera& camera);
 };
 
