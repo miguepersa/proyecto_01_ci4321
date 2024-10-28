@@ -295,17 +295,18 @@ int main() {
 
 			if (canShoot)
 			{
-				glm::vec3 barrelOffset = glm::vec3(0.0f, 0.0f, 0.5f); // ******Cambiar cuando se ponga ca�on*********
+				//glm::vec3 barrelOffset = glm::vec3(tankObject.meshes[1].Orientation.x * 0.5, tankObject.meshes[1].Orientation.y * 0.5, tankObject.meshes[1].Orientation.z * 0.5);
 
 				// rotar segun rotacion de la torre
-				glm::mat4 turretRotationMatrix = glm::rotate(glm::mat4(1.0f), tankObject.meshes[1].rotateAngles, glm::vec3(0.0f, 1.0f, 0.0f));
-				glm::vec3 rotatedBarrelOffset = glm::vec3(turretRotationMatrix * glm::vec4(barrelOffset, 1.0f));
-
-				// pos init projectile
-				glm::vec3 projectileStartPos = tankObject.meshes[1].Position + rotatedBarrelOffset;
+				/*glm::mat4 turretRotationMatrix = glm::rotate(glm::mat4(1.0f), tankObject.meshes[1].rotateAngles, glm::vec3(0.0f, 1.0f, 0.0f));
+				glm::vec3 rotatedBarrelOffset = glm::vec3(turretRotationMatrix * glm::vec4(barrelOffset, 1.0f));*/
 
 				// direccion
-				glm::vec3 projectileDirection = glm::vec3(sin(tankObject.meshes[1].rotateAngles), 0.0f, cos(tankObject.meshes[1].rotateAngles));
+				glm::vec3 projectileDirection = tankObject.meshes[1].Orientation;
+				
+				// pos init projectile
+				glm::vec3 projectileStartPos = tankObject.meshes[1].Position + projectileDirection;
+
 
 				Projectile newProjectile(projectileMesh, projectileStartPos, projectileDirection, 20.0f);
 
@@ -339,25 +340,23 @@ int main() {
 		static bool canShootParabolic = true;
 
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
-		{
-			
+		{	
 
 			if (canShootParabolic)
 			{
-				glm::vec3 barrelOffset = glm::vec3(0.0f, 0.0f, 0.5f); // ******Cambiar cuando se ponga ca�on*********
+				//glm::vec3 barrelOffset = glm::vec3(0.0f, 0.0f, 0.5f); // ******Cambiar cuando se ponga ca�on*********
 
 				// rotar segun rotacion de la torre
-				glm::mat4 turretRotationMatrix = glm::rotate(glm::mat4(1.0f), tankObject.meshes[1].rotateAngles, glm::vec3(0.0f, 1.0f, 0.0f));
-				glm::vec3 rotatedBarrelOffset = glm::vec3(turretRotationMatrix * glm::vec4(barrelOffset, 1.0f));
+				/*glm::mat4 turretRotationMatrix = glm::rotate(glm::mat4(1.0f), tankObject.meshes[1].rotateAngles, glm::vec3(0.0f, 1.0f, 0.0f));
+				glm::vec3 rotatedBarrelOffset = glm::vec3(turretRotationMatrix * glm::vec4(barrelOffset, 1.0f));*/
 
 				// pos init projectile
-				glm::vec3 projectileStartPos = tankObject.meshes[1].Position + rotatedBarrelOffset;
 
 				// Callculo de parabola
 				float elevationAngle = glm::radians(elevationAngleDegrees);
-				glm::vec3 horizontalDirection = glm::vec3(sin(tankObject.meshes[1].rotateAngles), 0.0f, cos(tankObject.meshes[1].rotateAngles));
-				glm::vec3 projectileDirection = glm::normalize(glm::vec3(horizontalDirection.x * cos(elevationAngle), sin(elevationAngle), horizontalDirection.z * cos(elevationAngle)));
+				glm::vec3 projectileDirection = tankObject.meshes[1].Orientation;
 				float projectileSpeed = 20.0f;
+				glm::vec3 projectileStartPos = tankObject.meshes[1].Position + projectileDirection;
 
 				Projectile newProjectile(projectileMesh, projectileStartPos, projectileDirection, projectileSpeed, true);
 

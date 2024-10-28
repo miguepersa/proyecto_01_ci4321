@@ -27,6 +27,21 @@ uniform mat4 model;
 uniform vec3 position;
 
 uniform float rotationAngle;
+uniform float elevationAngle;
+
+mat4 rotateElevation(float angle) 
+{
+    float cosAngle = cos(angle);
+    float sinAngle = sin(angle);
+
+    // Rotation around X-axis
+    return mat4(
+        1.0, 0.0,      0.0,       0.0,
+        0.0, cosAngle, -sinAngle, 0.0,
+        0.0, sinAngle, cosAngle,  0.0,
+        0.0, 0.0,      0.0,       1.0
+    );
+}
 
 mat4 rotate(float angle) 
 {
@@ -44,7 +59,10 @@ mat4 rotate(float angle)
 
 void main()
 {
-    currentPos = vec3((rotate(rotationAngle) * model) * vec4(aPos, 1.0f)) + position;
+
+    mat4 combinedRotation = rotateElevation(elevationAngle) * rotate(rotationAngle);
+
+    currentPos = vec3((combinedRotation * model) * vec4(aPos, 1.0f)) + position;
 
     if (currentPos.y <= 0.0f) {
         currentPos.y = 0.0f;

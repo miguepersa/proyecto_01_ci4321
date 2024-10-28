@@ -4,6 +4,9 @@
 Object::Object(std::vector<Mesh>& meshes) {
 
     Object::meshes = meshes;
+    meshes[0].Orientation = glm::vec3(0.0f, 0.0f, -1.0f);
+    meshes[1].Orientation = glm::vec3(0.0f, 0.0f, -1.0f);
+    meshes[1].rotateAngles = glm::radians(180.0f);
 }
 
 void Object::setMeshOffset(glm::vec3 offset, unsigned int index)
@@ -38,8 +41,8 @@ void Object::HandleInput(GLFWwindow* window, glm::vec3 cameraOrientation, float 
     // Move tank forward and backward with W and S keys
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
         Position += realSpeed * forwardDir;
-        meshes[0].Position += realSpeed * forwardDir;;
-        meshes[1].Position += realSpeed * forwardDir;;
+        meshes[0].Position += realSpeed * forwardDir;
+        meshes[1].Position += realSpeed * forwardDir;
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
         Position -= realSpeed * forwardDir;
@@ -78,16 +81,21 @@ void Object::HandleInput(GLFWwindow* window, glm::vec3 cameraOrientation, float 
         yaw += roty;
         pitch -= rotx;
 
-        // Limita el pitch para evitar que la cámara se voltee
-        if (pitch > 89.0f) pitch = 89.0f;
-        if (pitch < -89.0f) pitch = -89.0f;
+        // Limita el pitch para evitar que la torreta se voltee
+        if (pitch >  30.0f) pitch =  30.0f;
+        if (pitch < -30.0f) pitch = -30.0f;
 
         // Restablece el cursor al centro de la pantalla
         glfwSetCursorPos(window, (windowWidth / 2), (windowHeight / 2));
 
         // Store the turret rotation in the Object if Mesh lacks TurretOrientation
-        rotateMesh(1, -(tankRotationY + yaw));
-
+        rotateMesh(1, -(yaw));
+        meshes[1].elevationAngle = glm::radians(pitch);
+        meshes[1].Orientation.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        meshes[1].Orientation.y = sin(glm::radians(pitch));
+        meshes[1].Orientation.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        meshes[1].Orientation = glm::normalize(meshes[1].Orientation);
+        
     }
 
     // Additional input handling (optional) for altitude control and speed boost

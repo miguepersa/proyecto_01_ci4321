@@ -8,30 +8,30 @@
 // Vertices coordinates
 Vertex tankVertices[] =
 { //               COORDINATES           /            COLORS          /           NORMALS         /       TEXTURE COORDINATES    //
-	Vertex{glm::vec3(-2.0f,  0.0f,  1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(0.0f,-1.0f, 0.0f), glm::vec2(2.0f, 0.0f)},
-	Vertex{glm::vec3(-2.0f,  0.0f, -1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f,-1.0f, 0.0f), glm::vec2(2.0f, 2.0f)},
-	Vertex{glm::vec3(2.0f,   0.0f, -1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f,-1.0f, 0.0f), glm::vec2(0.0f, 2.0f)},
-	Vertex{glm::vec3(2.0f,   0.0f,  1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f,-1.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(-2.0f,  0.0f,  1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(2.0f,   1.0f,  1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(2.0f, 2.0f)},
-	Vertex{glm::vec3(-2.0f,  1.0f,  1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 2.0f)},
-	Vertex{glm::vec3(2.0f,   0.0f,  1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(2.0f, 0.0f)},
-	Vertex{glm::vec3(2.0f,   0.0f,  1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(2.0f,   1.0f,  1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 2.0f)},
-	Vertex{glm::vec3(2.0f,   1.0f, -1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(2.0f, 2.0f)},
-	Vertex{glm::vec3(2.0f,   0.0f, -1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(2.0f, 0.0f)},
-	Vertex{glm::vec3(2.0f,   0.0f, -1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f,-1.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(2.0f,   1.0f, -1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f,-1.0f), glm::vec2(0.0f, 2.0f)},
-	Vertex{glm::vec3(-2.0f,  1.0f, -1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f,-1.0f), glm::vec2(2.0f, 2.0f)},
-	Vertex{glm::vec3(-2.0f,  0.0f, -1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f,-1.0f), glm::vec2(2.0f, 0.0f)},
-	Vertex{glm::vec3(-2.0f,  0.0f, -1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(-2.0f,  1.0f, -1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 2.0f)},
-	Vertex{glm::vec3(-2.0f,  1.0f,  1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(2.0f, 2.0f)},
-	Vertex{glm::vec3(-2.0f,  0.0f,  1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(2.0f, 0.0f)},
-	Vertex{glm::vec3(-2.0f,  1.0f,  1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(-2.0f,  1.0f, -1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 2.0f)},
-	Vertex{glm::vec3(2.0f,   1.0f, -1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(2.0f, 2.0f)},
-	Vertex{glm::vec3(2.0f,   1.0f,  1.5f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(2.0f, 0.0f)},
+	Vertex{glm::vec3(-1.0f,  0.0f,  2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(0.0f,-1.0f, 0.0f), glm::vec2(2.0f, 0.0f)},
+	Vertex{glm::vec3(-1.0f,  0.0f, -2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f,-1.0f, 0.0f), glm::vec2(2.0f, 2.0f)},
+	Vertex{glm::vec3( 1.0f,  0.0f, -2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f,-1.0f, 0.0f), glm::vec2(0.0f, 2.0f)},
+	Vertex{glm::vec3( 1.0f,  0.0f,  2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f,-1.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-1.0f,  0.0f,  2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3( 1.0f,  1.0f,  2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(2.0f, 2.0f)},
+	Vertex{glm::vec3(-1.0f,  1.0f,  2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 2.0f)},
+	Vertex{glm::vec3( 1.0f,  0.0f,  2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(2.0f, 0.0f)},
+	Vertex{glm::vec3( 1.0f,  0.0f,  2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3( 1.0f,  1.0f,  2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 2.0f)},
+	Vertex{glm::vec3( 1.0f,  1.0f, -2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(2.0f, 2.0f)},
+	Vertex{glm::vec3( 1.0f,  0.0f, -2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(2.0f, 0.0f)},
+	Vertex{glm::vec3( 1.0f,  0.0f, -2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f,-1.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3( 1.0f,  1.0f, -2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f,-1.0f), glm::vec2(0.0f, 2.0f)},
+	Vertex{glm::vec3(-1.0f,  1.0f, -2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f,-1.0f), glm::vec2(2.0f, 2.0f)},
+	Vertex{glm::vec3(-1.0f,  0.0f, -2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f,-1.0f), glm::vec2(2.0f, 0.0f)},
+	Vertex{glm::vec3(-1.0f,  0.0f, -2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-1.0f,  1.0f, -2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 2.0f)},
+	Vertex{glm::vec3(-1.0f,  1.0f,  2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(2.0f, 2.0f)},
+	Vertex{glm::vec3(-1.0f,  0.0f,  2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(2.0f, 0.0f)},
+	Vertex{glm::vec3(-1.0f,  1.0f,  2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-1.0f,  1.0f, -2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 2.0f)},
+	Vertex{glm::vec3( 1.0f,  1.0f, -2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(2.0f, 2.0f)},
+	Vertex{glm::vec3( 1.0f,  1.0f,  2.0f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(2.0f, 0.0f)},
 };
 // Indices for vertices order
 GLuint tankIndices[] =
@@ -54,27 +54,48 @@ GLuint tankIndices[] =
 // Torreta
 Vertex turretVertices[] =
 {
-	// Up
-	Vertex{glm::vec3(-0.5f, 0.0f, -0.5f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(0.5f, 0.0f, -0.5f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(1.0f, 0.0f)},
-	Vertex{glm::vec3(0.5f, 0.0f,  0.5f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(1.0f, 1.0f)},
-	Vertex{glm::vec3(-0.5f, 0.0f,  0.5f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec2(0.0f, 1.0f)},
-	// Bot
-	Vertex{glm::vec3(-0.5f, 0.5f, -0.5f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(0.0f,  1.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
-	Vertex{glm::vec3(0.5f, 0.5f, -0.5f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(0.0f,  1.0f, 0.0f), glm::vec2(1.0f, 0.0f)},
-	Vertex{glm::vec3(0.5f, 0.5f,  0.5f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(0.0f,  1.0f, 0.0f), glm::vec2(1.0f, 1.0f)},
-	Vertex{glm::vec3(-0.5f, 0.5f,  0.5f), glm::vec3(0.6f, 0.6f, 0.6f), glm::vec3(0.0f,  1.0f, 0.0f), glm::vec2(0.0f, 1.0f)},
+	//               COORDINATES           /            COLORS          /           NORMALS         /       TEXTURE COORDINATES    //
+	Vertex{glm::vec3(-0.5f,  0.0f,  0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(0.0f,-1.0f, 0.0f), glm::vec2(2.0f, 0.0f)},
+	Vertex{glm::vec3(-0.5f,  0.0f, -0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f,-1.0f, 0.0f), glm::vec2(2.0f, 2.0f)},
+	Vertex{glm::vec3( 0.5f,  0.0f, -0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f,-1.0f, 0.0f), glm::vec2(0.0f, 2.0f)},
+	Vertex{glm::vec3( 0.5f,  0.0f,  0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f,-1.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-0.5f,  0.0f,  0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3( 0.5f,  0.7f,  0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(2.0f, 2.0f)},
+	Vertex{glm::vec3(-0.5f,  0.7f,  0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0.0f, 2.0f)},
+	Vertex{glm::vec3( 0.5f,  0.0f,  0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(2.0f, 0.0f)},
+	Vertex{glm::vec3( 0.5f,  0.0f,  0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3( 0.5f,  0.7f,  0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 2.0f)},
+	Vertex{glm::vec3( 0.5f,  0.7f, -0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(2.0f, 2.0f)},
+	Vertex{glm::vec3( 0.5f,  0.0f, -0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(2.0f, 0.0f)},
+	Vertex{glm::vec3( 0.5f,  0.0f, -0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f,-1.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3( 0.5f,  0.7f, -0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f,-1.0f), glm::vec2(0.0f, 2.0f)},
+	Vertex{glm::vec3(-0.5f,  0.7f, -0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f,-1.0f), glm::vec2(2.0f, 2.0f)},
+	Vertex{glm::vec3(-0.5f,  0.0f, -0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),	glm::vec3(0.0f, 0.0f,-1.0f), glm::vec2(2.0f, 0.0f)},
+	Vertex{glm::vec3(-0.5f,  0.0f, -0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-0.5f,  0.7f, -0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(0.0f, 2.0f)},
+	Vertex{glm::vec3(-0.5f,  0.7f,  0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(2.0f, 2.0f)},
+	Vertex{glm::vec3(-0.5f,  0.0f,  0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec2(2.0f, 0.0f)},
+	Vertex{glm::vec3(-0.5f,  0.7f,  0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 0.0f)},
+	Vertex{glm::vec3(-0.5f,  0.7f, -0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f, 2.0f)},
+	Vertex{glm::vec3( 0.5f,  0.7f, -0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(2.0f, 2.0f)},
+	Vertex{glm::vec3( 0.5f,  0.7f,  0.5f),	glm::vec3(1.0f, 1.0f, 1.0f),    glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(2.0f, 0.0f)},
 };
 
 // index buff torreta
 GLuint turretIndices[] =
 {
-	0, 1, 2, 0, 2, 3,
-	4, 5, 6, 4, 6, 7,
-	3, 2, 6, 3, 6, 7,
-	0, 1, 5, 0, 5, 4,
-	1, 2, 6, 1, 6, 5,
-	0, 3, 7, 0, 7, 4
+	0,		 1,		 2, // bottom side
+	 0,		 2,		 3, // bottom side
+	 4,		 5,		 6, // back side
+	 4,		 7,		 5, // back side
+	 8,		 9,		10, // right side
+	 8,		10,		11, // right side
+	12,		13,		14, // front side
+	12,		14,		15, // front side
+	16,		17,		18, // left side
+	16,		18,		19, // left side
+	20,		21,		22, // top side
+	20,		22,		23, // top side
 };
 
 Vertex projectileVertices[] =
@@ -193,12 +214,12 @@ Vertex lightVertices[] =
 { //     COORDINATES     //
 	Vertex{glm::vec3(-0.1f, -0.1f,  0.1f)},
 	Vertex{glm::vec3(-0.1f, -0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f, -0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f, -0.1f,  0.1f)},
+	Vertex{glm::vec3( 0.1f, -0.1f, -0.1f)},
+	Vertex{glm::vec3( 0.1f, -0.1f,  0.1f)},
 	Vertex{glm::vec3(-0.1f,  0.1f,  0.1f)},
 	Vertex{glm::vec3(-0.1f,  0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f,  0.1f, -0.1f)},
-	Vertex{glm::vec3(0.1f,  0.1f,  0.1f)}
+	Vertex{glm::vec3( 0.1f,  0.1f, -0.1f)},
+	Vertex{glm::vec3( 0.1f,  0.1f,  0.1f)}
 };
 
 GLuint lightIndices[] =
