@@ -47,6 +47,7 @@ int main() {
 	// Generate shader program
 	Shader shaderProgram("shaders/default.vert", "shaders/default.frag");
 	Shader tankShader("shaders/default.vert", "shaders/default.frag");
+	Shader turretShader("shaders/default.vert", "shaders/default.frag");
 	Shader skyboxShader("shaders/skybox.vert", "shaders/skybox.frag");
 
 	std::vector<Vertex> floorVerts(floorVertices, floorVertices + sizeof(floorVertices) / sizeof(Vertex));
@@ -65,10 +66,6 @@ int main() {
 	std::vector<GLuint> tankInd(tankIndices, tankIndices + sizeof(tankIndices) / sizeof(GLuint));
 	std::vector<Texture> tankTex(tankTextures, tankTextures + sizeof(tankTextures) / sizeof(tankTextures));
 
-	Mesh tank(tankVerts, tankInd, tankTex);
-	Object tankObject(tank);
-	tankObject.mesh.Position = glm::vec3(0.0f, 0.1f, 0.0f);
-
 	// Texturas para la torreta (puedes usar la misma textura que el tanque o una diferente)
 	Texture turretTextures[]
 	{
@@ -79,11 +76,11 @@ int main() {
 	std::vector<GLuint> turretInd(turretIndices, turretIndices + sizeof(turretIndices) / sizeof(GLuint));
 	std::vector<Texture> turretTex(turretTextures, turretTextures + sizeof(turretTextures) / sizeof(turretTextures));
 
-	Mesh turretMesh(turretVerts, turretInd, turretTex);
-	Object turretObject(turretMesh);
+	std::vector<Mesh> tankMeshes = { Mesh(tankVerts, tankInd, tankTex), Mesh(turretVerts, turretInd, turretTex) };
 
-	// Posición inicial de la torreta (encima del tanque)
-	turretObject.mesh.Position = tankObject.mesh.Position + glm::vec3(0.0f, 1.5f, 0.0f);
+	Object tankObject(tankMeshes);
+	tankObject.setMeshOffset(glm::vec3(0.0f, 0.0f, 0.0f), 0);
+	tankObject.setMeshOffset(glm::vec3(0.0f, 1.0f, 0.0f), 1);
 
 	// Light Shader
 	Shader lightShader("shaders/light.vert", "shaders/light.frag");
@@ -114,8 +111,13 @@ int main() {
 	glUniformMatrix4fv(glGetUniformLocation(tankShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(objModel));
 	glUniform4f(glGetUniformLocation(tankShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(tankShader.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-	glUniform3f(glGetUniformLocation(tankShader.ID, "position"), 1.0f, 1.0f, -2.0f);
+	glUniform3f(glGetUniformLocation(shaderProgram.ID, "position"), 0.0f, 0.0f, 0.0f);
 
+	turretShader.Activate();
+	glUniformMatrix4fv(glGetUniformLocation(tankShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(objModel));
+	glUniform4f(glGetUniformLocation(tankShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(tankShader.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	glUniform3f(glGetUniformLocation(shaderProgram.ID, "position"), 0.0f, 0.0f, 0.0f);
 
 	skyboxShader.Activate();
 	glUniform1i(glGetUniformLocation(skyboxShader.ID, "skybox"), 0);
@@ -204,6 +206,8 @@ int main() {
 		}
 	}
 
+	std::vector<Shader> tankShaders = { tankShader, turretShader };
+
 	// Main loop
 	while (!glfwWindowShouldClose(window)) 
 	{
@@ -230,17 +234,14 @@ int main() {
 		// Manejo de entrada del tanque
 		tankObject.HandleInput(window, camera.Orientation, (float)currentTime, windowWidth, windowHeight);
 
-		// Actualizar la posición de la torreta para que esté siempre encima del tanque
-		turretObject.mesh.Position = tankObject.mesh.Position + glm::vec3(0.0f, 1.5f, 0.0f);
-		//camera.Inputs(window, (float) currentTime, tankObject.mesh.Position);
-		camera.followObject(tankObject.mesh.Position, tankObject.mesh.Orientation);
+		//camera.Inputs(window, (float) currentTime, tankObject.Position);
+		camera.followObject(tankObject.Position, tankObject.Orientation);
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
 		floor.Draw(shaderProgram, camera);
 		light.Draw(lightShader, camera);
-		tankObject.mesh.Draw(tankShader, camera);
-		turretObject.mesh.Draw(tankShader, camera);
-
+		tankObject.Draw(tankShaders, camera);
+		
 		glDepthFunc(GL_LEQUAL);
 		
 		skyboxShader.Activate();
