@@ -35,6 +35,9 @@ class Camera {
 
 		// Updates the camera matrix to the Vertex Shader
 		void updateMatrix(float FOVdeg, float nearPlane, float farPlane);
+
+		glm::mat4 getOrthoMatrix(float left, float right, float bottom, float top, float near, float far);
+
 		// Exports the camera matrix to a shader
 		void Matrix(Shader& shader, const char* uniform);
 		void followObject(glm::vec3 position, glm::vec3 orientation);

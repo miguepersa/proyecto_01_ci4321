@@ -6,12 +6,140 @@
 #include <ctime>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "Tank.h"
 
 const unsigned int windowWidth = 1900;
 const unsigned int windowHeight = 1000;
 float elevationAngleDegrees = 45.0f;
 
 void spawnObstacles(float x, float z, Mesh cubeMesh, Mesh pyramidMesh, std::vector<Obstacle>& activeObstacles);
+
+// Variables globales
+unsigned int barVAO, barVBO;
+unsigned int atlasTexture;
+float maxBarWidth = 200.0f;
+float barHeight = 20.0f;
+Tank tank;
+
+
+void initializeBar() {
+	float currentBarWidth = maxBarWidth * (tank.currentAmmo / (float)tank.maxAmmo);
+	std::vector<float> barVertices = {
+		// tri 1
+		0.0f, 0.0f, 0.0f,
+		currentBarWidth, 0.0f, 0.0f,
+		0.0f, barHeight, 0.0f,
+		// tri 2
+		0.0f, barHeight, 0.0f,
+		currentBarWidth, 0.0f, 0.0f,
+		currentBarWidth, barHeight, 0.0f
+	};
+
+	// buffers de la barra
+	glGenVertexArrays(1, &barVAO);
+	glGenBuffers(1, &barVBO);
+
+	glBindVertexArray(barVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, barVBO);
+	glBufferData(GL_ARRAY_BUFFER, barVertices.size() * sizeof(float), barVertices.data(), GL_DYNAMIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
+void renderBar(Camera& camera, unsigned int overlayShaderID, int windowWidth, int windowHeight) {
+
+	glm::mat4 orthoMatrix = camera.getOrthoMatrix(0.0f, windowWidth, 0.0f, windowHeight, -1.0f, 1.0f);
+
+
+	float currentBarWidth = maxBarWidth * (tank.currentAmmo / (float)tank.maxAmmo);
+	std::vector<float> barVertices = {
+		// tri 1
+		0.0f, 0.0f, 0.0f,
+		currentBarWidth, 0.0f, 0.0f,
+		0.0f, barHeight, 0.0f,
+		// tri 2
+		0.0f, barHeight, 0.0f,
+		currentBarWidth, 0.0f, 0.0f,
+		currentBarWidth, barHeight, 0.0f
+	};
+
+	glBindBuffer(GL_ARRAY_BUFFER, barVBO);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, barVertices.size() * sizeof(float), barVertices.data());
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// renderizar la barra
+	glDisable(GL_DEPTH_TEST);
+	glUseProgram(overlayShaderID);
+	glUniformMatrix4fv(glGetUniformLocation(overlayShaderID, "orthoMatrix"), 1, GL_FALSE, glm::value_ptr(orthoMatrix));
+	glUniform4f(glGetUniformLocation(overlayShaderID, "barColor"), 0.0f, 1.0f, 0.0f, 1.0f); // verde asqueroso
+
+	glBindVertexArray(barVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
+	glEnable(GL_DEPTH_TEST);
+}
+
+void renderChar(float x, float y, char c, unsigned int shaderID) {
+	if (c < '0' || c > '9') return; 
+
+	int index = c - '0';        
+	int col = index + 1;       
+	int row = 1;                
+
+	float cellSize = 48.0f / 768.0f; 
+	float u = col * cellSize;
+	float v = 1.0f - ((row + 1) * cellSize);
+	float uWidth = cellSize;
+	float vHeight = cellSize;
+
+
+	float vertices[] = {
+
+		x, y,                u, v,                    
+		x + 48.0f, y,        u + uWidth, v,         
+		x, y + 48.0f,        u, v + vHeight,     
+
+		x + 48.0f, y,        u + uWidth, v,            
+		x + 48.0f, y + 48.0f, u + uWidth, v + vHeight, 
+		x, y + 48.0f,        u, v + vHeight           
+	};
+
+	// buffers del texto
+	unsigned int VAO, VBO;
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, atlasTexture);
+	glUniform1i(glGetUniformLocation(shaderID, "textAtlas"), 0);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDeleteBuffers(1, &VBO);
+	glDeleteVertexArrays(1, &VAO);
+}
+
+void renderText(float x, float y, std::string text, unsigned int shaderID) {
+	float offsetX = 0.0f;
+
+	for (char c : text) {
+		renderChar(x + offsetX, y, c, shaderID);
+		offsetX += 16.0f;
+	}
+}
 
 int main() {
 
@@ -56,6 +184,8 @@ int main() {
 	Shader tankShader("shaders/default.vert", "shaders/default.frag");
 	Shader turretShader("shaders/default.vert", "shaders/default.frag");
 	Shader skyboxShader("shaders/skybox.vert", "shaders/skybox.frag");
+	Shader overlayShader("shaders/overlay.vert", "shaders/overlay.frag");
+	Shader textShader("shaders/text.vert", "shaders/text.frag");
 
 	std::vector<Vertex> floorVerts(floorVertices, floorVertices + sizeof(floorVertices) / sizeof(Vertex));
 	std::vector<GLuint> floorInd(floorIndices, floorIndices + sizeof(floorIndices) / sizeof(GLuint));
@@ -129,6 +259,29 @@ int main() {
 	glm::vec3 objPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::mat4 objModel = glm::mat4(1.0f);
 	objModel = glm::translate(objModel, objPos);
+
+	// Cargar el atlas de caracteres como textura
+	glGenTextures(1, &atlasTexture);
+	glBindTexture(GL_TEXTURE_2D, atlasTexture);
+
+	stbi_set_flip_vertically_on_load(true); 
+
+	int atlasWidth, atlasHeight, nrChannels;
+	// Flaco cambia la ubicacion del altlas pa que sirva en tu pc xdd
+	unsigned char* atlasData = stbi_load("C:/Users/gabri/OneDrive/Documents/USB/Sep - Dic 2024/Computacion Grafica/Proyectos VSCode/textures/gonna_kms.jpeg", &atlasWidth, &atlasHeight, &nrChannels, STBI_rgb_alpha);
+	if (atlasData) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlasWidth, atlasHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlasData);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		std::cout << "Atlas loaded successfully. Dimensions: " << atlasWidth << "x" << atlasHeight << " Channels: " << nrChannels << std::endl;
+	}
+	else {
+		std::cerr << "Failed to load atlas texture.\n";
+		std::cerr << "STB Error: " << stbi_failure_reason() << std::endl;
+	}
+	stbi_image_free(atlasData);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	lightShader.Activate();
 	glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
@@ -241,6 +394,8 @@ int main() {
 
 	std::vector<Shader> tankShaders = { tankShader, turretShader };
 
+	initializeBar();
+
 	// Main loop
 	while (!glfwWindowShouldClose(window)) 
 	{
@@ -271,6 +426,8 @@ int main() {
 		camera.followObject(tankObject.Position, tankObject.Orientation);
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
+
+
 		static bool canSpawnObstacle = true;
 
 		if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
@@ -293,13 +450,18 @@ int main() {
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 		{
 
-			if (canShoot)
+			if (canShoot and tank.isReloading == false)
 			{
 				//glm::vec3 barrelOffset = glm::vec3(tankObject.meshes[1].Orientation.x * 0.5, tankObject.meshes[1].Orientation.y * 0.5, tankObject.meshes[1].Orientation.z * 0.5);
 
 				// rotar segun rotacion de la torre
 				/*glm::mat4 turretRotationMatrix = glm::rotate(glm::mat4(1.0f), tankObject.meshes[1].rotateAngles, glm::vec3(0.0f, 1.0f, 0.0f));
 				glm::vec3 rotatedBarrelOffset = glm::vec3(turretRotationMatrix * glm::vec4(barrelOffset, 1.0f));*/
+
+				tank.Shoot();
+				if (tank.currentAmmo == 0) {
+					tank.isReloading = true;
+				}
 
 				// direccion
 				glm::vec3 projectileDirection = tankObject.meshes[1].Orientation;
@@ -408,11 +570,25 @@ int main() {
 				}
 			}
 		}
+		if (tank.isReloading) {
 
+			// tiempo restante
+			std::string timeLeft = std::to_string((int)std::ceil(tank.reloadTime - tank.reloadTimer - 1));
+			std::cout << "Reloading: " << tank.reloadTime - tank.reloadTimer << " seconds left\n";
+
+			textShader.Activate();
+			glm::mat4 orthoMatrix = camera.getOrthoMatrix(0.0f, windowWidth, 0.0f, windowHeight, -1.0f, 1.0f);
+			glUniformMatrix4fv(glGetUniformLocation(textShader.ID, "orthoMatrix"), 1, GL_FALSE, glm::value_ptr(orthoMatrix));
+
+			renderText(50.0f, 120.0f, timeLeft, textShader.ID);
+		}
+
+		tank.Reload(deltaTime);
 		floor.Draw(shaderProgram, camera);
 		light.Draw(lightShader, camera);
 		tankObject.Draw(tankShaders, camera);
-				// Usamos shader de tanque porque hacer shaders nuevos es r word
+
+		// Usamos shader de tanque porque hacer shaders nuevos es r word (r word es no hacer shaders nuevos pa [tuve que hacer 2 shaders nuevos porque esta mierda no funcionaba])
 		for (Projectile& proj : activeProjectiles)
 		{
 			proj.Draw(tankShader, camera);
@@ -421,6 +597,8 @@ int main() {
 		{
 			obstacle.Draw(tankShader, camera);
 		}
+
+		renderBar(camera, overlayShader.ID, windowWidth, windowHeight);
 
 
 		glDepthFunc(GL_LEQUAL);

@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 Camera::Camera(int width, int height, glm::vec3 position){
 
@@ -26,6 +27,10 @@ void Camera::Matrix(Shader& shader, const char* uniform) {
 
 	// Exports camera matrix
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
+}
+
+glm::mat4 Camera::getOrthoMatrix(float left, float right, float bottom, float top, float near, float far) {
+	return glm::ortho(left, right, bottom, top, near, far);
 }
 
 void Camera::followObject(glm::vec3 position, glm::vec3 orientation) {
