@@ -268,7 +268,7 @@ int main() {
 
 	int atlasWidth, atlasHeight, nrChannels;
 	// Flaco cambia la ubicacion del altlas pa que sirva en tu pc xdd
-	unsigned char* atlasData = stbi_load("C:/Users/gabri/OneDrive/Documents/USB/Sep - Dic 2024/Computacion Grafica/Proyectos VSCode/textures/gonna_kms.jpeg", &atlasWidth, &atlasHeight, &nrChannels, STBI_rgb_alpha);
+	unsigned char* atlasData = stbi_load("./textures/gonna_kms.jpeg", &atlasWidth, &atlasHeight, &nrChannels, STBI_rgb_alpha);
 	if (atlasData) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlasWidth, atlasHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlasData);
 		glGenerateMipmap(GL_TEXTURE_2D);
@@ -395,6 +395,8 @@ int main() {
 	std::vector<Shader> tankShaders = { tankShader, turretShader };
 
 	initializeBar();
+	float lightMove = 0.5f;
+	float lightZPosition = 0.0f;
 
 	// Main loop
 	while (!glfwWindowShouldClose(window)) 
@@ -421,6 +423,13 @@ int main() {
 
 		// Manejo de input tanque
 		tankObject.HandleInput(window, camera.Orientation, (float)currentTime, windowWidth, windowHeight);
+
+		glUniform1f(glGetUniformLocation(lightShader.ID, "lightMovement"),lightZPosition);
+		lightZPosition += lightMove * deltaTime;
+
+		if (lightZPosition >= 3.0f || lightZPosition <= -3.0f) {
+			lightMove *= -1;
+		}
 
 		//camera.Inputs(window, (float) currentTime, tankObject.Position);
 		camera.followObject(tankObject.Position, tankObject.Orientation);
