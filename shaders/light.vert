@@ -8,6 +8,7 @@ uniform float lightMovement;
 
 void main()
 {
-	vec4 pos = vec4(lightMovement, 0.0f, lightMovement, 0.0f);
-	gl_Position = (camMatrix * model * vec4(aPos, 1.0f)) + pos;
+	vec3 currentPos = vec3(model * vec4(aPos, 1.0f)) + vec3(lightMovement, 0.0f, lightMovement);
+	
+	gl_Position = camMatrix * vec4(currentPos, 1.0f);
 }

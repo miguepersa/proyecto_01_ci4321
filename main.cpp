@@ -395,7 +395,7 @@ int main() {
 	std::vector<Shader> tankShaders = { tankShader, turretShader };
 
 	initializeBar();
-	float lightMove = 0.5f;
+	float lightMove = 3.0f;
 	float lightZPosition = 0.0f;
 
 	// Main loop
@@ -413,6 +413,20 @@ int main() {
 			glfwSetWindowTitle(window, windowTitle.c_str());
 			prevTime = currentTime;
 			counter = 0;
+
+			if (lightZPosition >= 20.0f || lightZPosition <= -20.0f) {
+				lightMove *= -1;
+			}
+			lightZPosition += (lightMove * deltaTime);
+
+			shaderProgram.Activate();
+			glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x + lightZPosition, lightPos.y, lightPos.z + lightZPosition);
+			glUniform3f(glGetUniformLocation(tankShader.ID, "lightPos"),	lightPos.x + lightZPosition, lightPos.y, lightPos.z + lightZPosition);
+			glUniform3f(glGetUniformLocation(turretShader.ID, "lightPos"),	lightPos.x + lightZPosition, lightPos.y, lightPos.z + lightZPosition);
+
+
+			lightShader.Activate();
+			glUniform1f(glGetUniformLocation(lightShader.ID, "lightMovement"), lightZPosition);
 		}
 
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
@@ -423,13 +437,6 @@ int main() {
 
 		// Manejo de input tanque
 		tankObject.HandleInput(window, camera.Orientation, (float)currentTime, windowWidth, windowHeight);
-
-		glUniform1f(glGetUniformLocation(lightShader.ID, "lightMovement"),lightZPosition);
-		lightZPosition += lightMove * deltaTime;
-
-		if (lightZPosition >= 3.0f || lightZPosition <= -3.0f) {
-			lightMove *= -1;
-		}
 
 		//camera.Inputs(window, (float) currentTime, tankObject.Position);
 		camera.followObject(tankObject.Position, tankObject.Orientation);
