@@ -7,10 +7,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Tank.h"
-
 const unsigned int windowWidth = 1900;
 const unsigned int windowHeight = 1000;
 float elevationAngleDegrees = 45.0f;
+float particleSpawnTimer = 0.0f;
+float particleSpawnInterval = 1.0f;
 
 void spawnObstacles(float x, float z, Mesh cubeMesh, Mesh pyramidMesh, std::vector<Obstacle>& activeObstacles);
 
@@ -20,7 +21,119 @@ unsigned int atlasTexture;
 float maxBarWidth = 200.0f;
 float barHeight = 20.0f;
 Tank tank;
+glm::vec3 whatever(0.0f, 10.0f, 0.0f);
 
+#include <vector>
+#include <glm/glm.hpp>
+
+struct Particle {
+	glm::vec3 position;
+	glm::vec3 velocity;
+	float spawnTime;
+
+	Particle(glm::vec3 pos, glm::vec3 vel, float st)
+		: position(pos), velocity(vel), spawnTime(st) {}
+};
+
+std::vector<Particle> allParticles;
+
+unsigned int particleVAO;
+unsigned int positionVBO, velocityVBO, spawnTimeVBO;
+
+
+void initParticles() {
+
+	glGenVertexArrays(1, &particleVAO);
+	glBindVertexArray(particleVAO);
+
+
+	glGenBuffers(1, &positionVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, positionVBO);
+
+	glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+	glEnableVertexAttribArray(0);
+
+
+	glGenBuffers(1, &velocityVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, velocityVBO);
+	glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+	glEnableVertexAttribArray(1);
+
+
+	glGenBuffers(1, &spawnTimeVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, spawnTimeVBO);
+	glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
+	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*)0);
+	glEnableVertexAttribArray(2);
+
+	glBindVertexArray(0);
+}
+
+extern float lastSpawnTime;
+
+void renderParticles(Camera& camera, unsigned int particleShaderID, float currentTime) {
+	glEnable(GL_PROGRAM_POINT_SIZE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glPointSize(7.5f);
+
+	glUseProgram(particleShaderID);
+	glUniformMatrix4fv(glGetUniformLocation(particleShaderID, "camMatrix"), 1, GL_FALSE, glm::value_ptr(camera.cameraMatrix));
+	glUniform1f(glGetUniformLocation(particleShaderID, "time"), currentTime);
+
+	glBindVertexArray(particleVAO);
+	glDrawArrays(GL_POINTS, 0, allParticles.size());
+	glBindVertexArray(0);
+
+	glDisable(GL_BLEND);
+}
+
+float lastSpawnTime = 0.0f;
+
+void spawnParticlesAt(glm::vec3 position, int numParticles, float currentTime) {
+	float spawnHeight = 10.0f;
+	float areaRadius = 10.0f;
+
+	for (int i = 0; i < numParticles; i++) {
+		float randX = ((float)rand() / RAND_MAX - 0.5f) * 2.0f * areaRadius;
+		float randZ = ((float)rand() / RAND_MAX - 0.5f) * 2.0f * areaRadius;
+		glm::vec3 pos = glm::vec3(position.x + randX, spawnHeight, position.z + randZ);
+
+		float randYSpeed = -2.0f - 2.0f * ((float)rand() / RAND_MAX);
+		glm::vec3 vel = glm::vec3(0.0f, randYSpeed, 0.0f);
+
+		allParticles.emplace_back(pos, vel, currentTime);
+	}
+
+	std::vector<glm::vec3> positions;
+	std::vector<glm::vec3> velocities;
+	std::vector<float> spawnTimes;
+
+	positions.reserve(allParticles.size());
+	velocities.reserve(allParticles.size());
+	spawnTimes.reserve(allParticles.size());
+
+	for (auto& p : allParticles) {
+		positions.push_back(p.position);
+		velocities.push_back(p.velocity);
+		spawnTimes.push_back(p.spawnTime);
+	}
+
+	glBindVertexArray(particleVAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, positionVBO);
+	glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec3), positions.data(), GL_DYNAMIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, velocityVBO);
+	glBufferData(GL_ARRAY_BUFFER, velocities.size() * sizeof(glm::vec3), velocities.data(), GL_DYNAMIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, spawnTimeVBO);
+	glBufferData(GL_ARRAY_BUFFER, spawnTimes.size() * sizeof(float), spawnTimes.data(), GL_DYNAMIC_DRAW);
+
+	glBindVertexArray(0);
+}
 
 void initializeBar() {
 	float currentBarWidth = maxBarWidth * (tank.currentAmmo / (float)tank.maxAmmo);
@@ -141,6 +254,8 @@ void renderText(float x, float y, std::string text, unsigned int shaderID) {
 	}
 }
 
+
+
 int main() {
 
 	// GLFW Initialization
@@ -186,6 +301,7 @@ int main() {
 	Shader skyboxShader("shaders/skybox.vert", "shaders/skybox.frag");
 	Shader overlayShader("shaders/overlay.vert", "shaders/overlay.frag");
 	Shader textShader("shaders/text.vert", "shaders/text.frag");
+	Shader particleShader("shaders/particle.vert", "shaders/particle.frag");
 
 	std::vector<Vertex> floorVerts(floorVertices, floorVertices + sizeof(floorVertices) / sizeof(Vertex));
 	std::vector<GLuint> floorInd(floorIndices, floorIndices + sizeof(floorIndices) / sizeof(GLuint));
@@ -312,6 +428,8 @@ int main() {
 	// Enable depth buffer
 	glEnable(GL_DEPTH_TEST);
 
+	particleShader.Activate();
+
 	Camera camera(windowWidth, windowHeight, glm::vec3(0.0f, 1.5f, 6.0f));
 
 	double prevTime = 0.0;
@@ -395,6 +513,7 @@ int main() {
 	std::vector<Shader> tankShaders = { tankShader, turretShader };
 
 	initializeBar();
+	initParticles();
 
 	// Main loop
 	while (!glfwWindowShouldClose(window)) 
@@ -582,6 +701,23 @@ int main() {
 
 			renderText(50.0f, 120.0f, timeLeft, textShader.ID);
 		}
+		static bool Rain = false;
+		static bool R_was_pressed = false;
+
+		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS && !R_was_pressed) {
+			Rain = !Rain;
+			R_was_pressed = true;
+		}
+		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_RELEASE) {
+			R_was_pressed = false;
+		}
+
+		particleSpawnTimer += deltaTime;
+
+		if (particleSpawnTimer >= particleSpawnInterval && Rain) {
+			particleSpawnTimer = 0.0f;
+			spawnParticlesAt(whatever + tankObject.Position, 500, currentTime);
+		}
 
 		tank.Reload(deltaTime);
 		floor.Draw(shaderProgram, camera);
@@ -596,9 +732,12 @@ int main() {
 		for (Obstacle& obstacle : activeObstacles)
 		{
 			obstacle.Draw(tankShader, camera);
+
 		}
 
+
 		renderBar(camera, overlayShader.ID, windowWidth, windowHeight);
+		renderParticles(camera, particleShader.ID, (float)currentTime);
 
 
 		glDepthFunc(GL_LEQUAL);
