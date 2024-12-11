@@ -384,7 +384,7 @@ int main() {
 
 	int atlasWidth, atlasHeight, nrChannels;
 	// Flaco cambia la ubicacion del altlas pa que sirva en tu pc xdd
-	unsigned char* atlasData = stbi_load("C:/Users/gabri/OneDrive/Documents/USB/Sep - Dic 2024/Computacion Grafica/Proyectos VSCode/textures/gonna_kms.jpeg", &atlasWidth, &atlasHeight, &nrChannels, STBI_rgb_alpha);
+	unsigned char* atlasData = stbi_load("./textures/gonna_kms.jpeg", &atlasWidth, &atlasHeight, &nrChannels, STBI_rgb_alpha);
 	if (atlasData) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlasWidth, atlasHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlasData);
 		glGenerateMipmap(GL_TEXTURE_2D);
@@ -513,6 +513,8 @@ int main() {
 	std::vector<Shader> tankShaders = { tankShader, turretShader };
 
 	initializeBar();
+	float lightMove = 3.0f;
+	float lightZPosition = 0.0f;
 	initParticles();
 
 	// Main loop
@@ -530,6 +532,20 @@ int main() {
 			glfwSetWindowTitle(window, windowTitle.c_str());
 			prevTime = currentTime;
 			counter = 0;
+
+			if (lightZPosition >= 20.0f || lightZPosition <= -20.0f) {
+				lightMove *= -1;
+			}
+			lightZPosition += (lightMove * deltaTime);
+
+			shaderProgram.Activate();
+			glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x + lightZPosition, lightPos.y, lightPos.z + lightZPosition);
+			glUniform3f(glGetUniformLocation(tankShader.ID, "lightPos"),	lightPos.x + lightZPosition, lightPos.y, lightPos.z + lightZPosition);
+			glUniform3f(glGetUniformLocation(turretShader.ID, "lightPos"),	lightPos.x + lightZPosition, lightPos.y, lightPos.z + lightZPosition);
+
+
+			lightShader.Activate();
+			glUniform1f(glGetUniformLocation(lightShader.ID, "lightMovement"), lightZPosition);
 		}
 
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);

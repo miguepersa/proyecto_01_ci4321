@@ -31,8 +31,8 @@ vec4 pointLight()
 	float dist = length(lightVec);
 	float a = 0.005;
 	float b = 0.001;
-	// float inten = 1.0f / (a * dist * dist + b * dist + 1.0f);
-	float inten = 1.0f;
+	float inten = 1.0f / (a * dist * dist + b * dist + 1.0f);
+	//float inten = 1.0f;
 	float ambient = 0.20f;
 
 	// diffuse lighting
@@ -64,12 +64,12 @@ vec4 directLight()
 	float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 8);
 	float specular = specAmount * specularLight;
 
-	return (texture(diffuse0, texCoord) * (diffuse + ambient) ) * lightColor;
+	return (texture(diffuse0, texCoord) * (diffuse + ambient + specular) ) * lightColor;
 }
 
 void main()
 {
 
 	// outputs final color
-	FragColor = directLight();
+	FragColor = pointLight();
 }
