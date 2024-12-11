@@ -91,47 +91,35 @@ void renderParticles(Camera& camera, unsigned int particleShaderID, float curren
 }
 
 float lastSpawnTime = 0.0f;
-
 void spawnParticlesAt(glm::vec3 position, int numParticles, float currentTime) {
 	float spawnHeight = 10.0f;
 	float areaRadius = 10.0f;
-
 	for (int i = 0; i < numParticles; i++) {
 		float randX = ((float)rand() / RAND_MAX - 0.5f) * 2.0f * areaRadius;
 		float randZ = ((float)rand() / RAND_MAX - 0.5f) * 2.0f * areaRadius;
 		glm::vec3 pos = glm::vec3(position.x + randX, spawnHeight, position.z + randZ);
-
 		float randYSpeed = -2.0f - 2.0f * ((float)rand() / RAND_MAX);
 		glm::vec3 vel = glm::vec3(0.0f, randYSpeed, 0.0f);
-
 		allParticles.emplace_back(pos, vel, currentTime);
 	}
-
 	std::vector<glm::vec3> positions;
 	std::vector<glm::vec3> velocities;
 	std::vector<float> spawnTimes;
-
 	positions.reserve(allParticles.size());
 	velocities.reserve(allParticles.size());
 	spawnTimes.reserve(allParticles.size());
-
 	for (auto& p : allParticles) {
 		positions.push_back(p.position);
 		velocities.push_back(p.velocity);
 		spawnTimes.push_back(p.spawnTime);
 	}
-
 	glBindVertexArray(particleVAO);
-
 	glBindBuffer(GL_ARRAY_BUFFER, positionVBO);
 	glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec3), positions.data(), GL_DYNAMIC_DRAW);
-
 	glBindBuffer(GL_ARRAY_BUFFER, velocityVBO);
 	glBufferData(GL_ARRAY_BUFFER, velocities.size() * sizeof(glm::vec3), velocities.data(), GL_DYNAMIC_DRAW);
-
 	glBindBuffer(GL_ARRAY_BUFFER, spawnTimeVBO);
 	glBufferData(GL_ARRAY_BUFFER, spawnTimes.size() * sizeof(float), spawnTimes.data(), GL_DYNAMIC_DRAW);
-
 	glBindVertexArray(0);
 }
 
@@ -767,7 +755,7 @@ int main() {
 		}
 
 		renderBar(camera, overlayShader.ID, windowWidth, windowHeight);
-
+		renderParticles(camera, particleShader.ID, (float)currentTime);
 
 		glDepthFunc(GL_LEQUAL);
 		
