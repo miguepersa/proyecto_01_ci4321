@@ -22,9 +22,7 @@ void main() {
     vec3 animatedPos = aPos + aVel * age;
     gl_Position = camMatrix * vec4(animatedPos, 1.0);
 
-    // Alpha va disminuyendo con el tiempo, lo que las hace "más claras" (más transparentes)
     float alpha = 1.0 - (age / lifeSpan);
 
-    // Color azul rey inicial con alpha decreciente
     particleColor = vec4(0.25, 0.41, 0.88, alpha);
 }
